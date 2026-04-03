@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('privileges')) {
+if (! Schema::hasTable('privileges')) {
                 Schema::create('privileges', function (Blueprint $table): void {
                     $table->id();
                     $table->string('user_type', 50);
@@ -23,13 +22,10 @@ return new class extends Migration
                     $table->timestamp('deleted_at')->nullable();
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('privileges');
-        });
+Schema::dropIfExists('privileges');
     }
 };

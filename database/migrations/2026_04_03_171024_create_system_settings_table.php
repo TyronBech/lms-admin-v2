@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('system_settings')) {
+    {
+if (! Schema::hasTable('system_settings')) {
         Schema::create('system_settings', function (Blueprint $table): void {
           $table->id();
           $table->string('key');
@@ -22,13 +21,10 @@ return new class extends Migration
           $table->unique('key', 'system_settings_key_unique');
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('system_settings');
-    });
+    {
+Schema::dropIfExists('system_settings');
   }
 };

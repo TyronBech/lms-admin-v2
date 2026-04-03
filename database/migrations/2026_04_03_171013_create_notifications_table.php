@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('notifications')) {
+    {
+if (! Schema::hasTable('notifications')) {
         Schema::create('notifications', function (Blueprint $table): void {
           $table->id();
           $table->foreignId('user_id')->constrained('usr_users')->cascadeOnDelete()->cascadeOnUpdate();
@@ -28,13 +27,10 @@ return new class extends Migration
           $table->index('transaction_id', 'idx_notif_transaction');
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('notifications');
-    });
+    {
+Schema::dropIfExists('notifications');
   }
 };

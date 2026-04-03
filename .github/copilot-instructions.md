@@ -57,6 +57,38 @@ DB::statement('CALL DistributeStagingUsers()');
 // Example: set actor for audit trail before any write
 DB::statement('SET @current_user_id = ?', [$adminId]);
 ```
+
+### MySQL SQL Files Organization
+
+Store all database-level logic as raw `.sql` files — do NOT embed triggers or procedures in migrations:
+
+```
+database/sql/
+├── triggers/
+│   ├── bk_books_triggers.sql
+│   ├── tr_transactions_triggers.sql
+│   ├── usr_users_triggers.sql
+│   ├── usr_student_details_triggers.sql
+│   ├── usr_employee_details_triggers.sql
+│   ├── usr_visitor_details_triggers.sql
+│   └── sessions_triggers.sql
+├── procedures/
+│   ├── AutoTimeoutUsers.sql
+│   ├── DistributeStagingUsers.sql
+│   ├── RestoreLastDistributedUsers.sql
+│   ├── archive_transactions.sql
+│   ├── Archive_user_logs.sql
+│   ├── ArchiveOldInventories.sql
+│   ├── RestoreArchivedInventory.sql
+│   ├── restore_user_logs.sql
+│   └── update_summary_matrix.sql
+└── events/
+    ├── AutoTimeoutEvent.sql
+    ├── mark_transactions_overdue.sql
+    ├── monthly_archived_transactions.sql
+    ├── monthly_archive_user_logs.sql
+    └── YearlyArchiveInventories.sql
+```
  
 ---
  
@@ -77,6 +109,21 @@ DB::statement('SET @current_user_id = ?', [$adminId]);
 - Follow PSR-12 enforced by Laravel Pint.
 - Always write PHPDoc blocks on all methods and classes.
 - Use `App\Enum\PermissionEnum` and `App\Enum\RoleEnum` for role/permission constants.
+- Use `App\Enum\TransactionStatusEnum` and `App\Enum\PenaltyStatusEnum` for transaction status constants.
+- Use `App\Enum\UserTypeEnum` for user type constants.
+- Use `App\Enum\BookStatusEnum` for book status constants.
+- Always use try catch blocks around database operations and log exceptions with Laravel's logging system.
+- Always use log levels (info, warning, error) appropriately in your logging statements.
+- Always return appropriate HTTP status codes in API responses (200, 201, 400, 401, 403, 404, 500).
+- Always sanitize and validate all user input to prevent SQL injection, XSS, and other vulnerabilities
+- Always use Laravel's built-in CSRF protection for all forms.
+- Always use Laravel's built-in authentication and password hashing features for user management.
+- Always write unit tests for all critical business logic in Service classes.
+- Always write feature tests for all major user flows and edge cases.
+- Always use transactional database operations when performing multiple related writes to ensure data integrity.
+- Always use Laravel's built-in pagination for any paginated API endpoints or views.
+- Always use Laravel's built-in caching mechanisms for expensive queries or computations.
+- Always use Laravel's built-in queue system for any time-consuming tasks (e.g., sending emails, generating reports).
  
 ### Model Table Bindings (ALWAYS use these)
 ```php
@@ -126,6 +173,16 @@ penalty_rules, privileges, ui_settings
   or any other chart library. All dashboard charts (line, bar, area, donut) must use
   ApexCharts via the `react-apexcharts` wrapper.
 - Use `@heroicons/react` for all icons.
+- Always have a consistent design system for colors, typography, spacing, and components across the app, using the ui settings table for primary, secondary, and tertiary colors.
+- Secondary color should only be used for body background and footer, never for primary UI elements like buttons, badges, header.
+- Primary color should be used for all primary UI elements (buttons, badges, header).
+- Tertiary color should only be used for hover states, accents, and highlights, never as a main color for UI elements.
+- Always have a suggested search term or placeholder text in search inputs to guide users on what they can search for.
+- Always provide loading states for all asynchronous actions (form submissions, data fetching).
+- Always provide error handling and display user-friendly error messages for failed operations, use toast (success, warning, error).
+- Always ensure the app is responsive and works well on different screen sizes (mobile, tablet, desktop).
+- If the code is redundant or can be abstracted into a reusable component, always create a new component in `resources/js/Components/` and use it instead of duplicating code.
+- Always use TypeScript interfaces to define the shape of data being passed around in the app, especially for API responses and component props. This ensures type safety and better developer experience.
  
 ### TypeScript Type Conventions
 Always define types matching the actual DB columns. Examples:

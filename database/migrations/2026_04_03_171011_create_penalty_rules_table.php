@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('penalty_rules')) {
+    {
+if (! Schema::hasTable('penalty_rules')) {
         Schema::create('penalty_rules', function (Blueprint $table): void {
           $table->id();
           $table->string('type', 50);
@@ -22,13 +21,10 @@ return new class extends Migration
           $table->dateTime('deleted_at')->nullable();
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('penalty_rules');
-    });
+    {
+Schema::dropIfExists('penalty_rules');
   }
 };

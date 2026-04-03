@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('archive_inventories')) {
+    {
+if (! Schema::hasTable('archive_inventories')) {
         Schema::create('archive_inventories', function (Blueprint $table): void {
           $table->id();
           $table->unsignedBigInteger('book_id');
@@ -23,13 +22,10 @@ return new class extends Migration
           $table->timestamp('archived_at')->nullable()->useCurrent();
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('archive_inventories');
-    });
+    {
+Schema::dropIfExists('archive_inventories');
   }
 };

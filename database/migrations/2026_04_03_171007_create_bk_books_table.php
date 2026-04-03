@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('bk_books')) {
+if (! Schema::hasTable('bk_books')) {
                 Schema::create('bk_books', function (Blueprint $table): void {
                     $table->id();
                     $table->string('accession', 20);
@@ -45,13 +44,10 @@ return new class extends Migration
                 DB::statement('ALTER TABLE bk_books ADD FULLTEXT ftx_book_title (title)');
                 DB::statement('ALTER TABLE bk_books ADD FULLTEXT ftx_book_author (author)');
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('bk_books');
-        });
+Schema::dropIfExists('bk_books');
     }
 };

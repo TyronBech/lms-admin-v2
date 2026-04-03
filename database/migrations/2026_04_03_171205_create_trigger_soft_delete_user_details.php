@@ -1,43 +1,26 @@
 <?php
 
+use App\Support\MigrationSqlFile;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-  public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() !== 'mysql') {
-        return;
-      }
+    public function up(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
 
-      DB::unprepared('DROP TRIGGER IF EXISTS `soft_delete_user_details`');
-      DB::unprepared(<<<'SQL'
-CREATE TRIGGER `soft_delete_user_details`
-AFTER UPDATE ON `usr_users`
-FOR EACH ROW
-BEGIN
-    IF NEW.deleted_at IS NOT NULL THEN
-        UPDATE usr_student_details SET deleted_at = NOW() WHERE user_id = NEW.id AND deleted_at IS NULL;
-        UPDATE usr_visitor_details SET deleted_at = NOW() WHERE user_id = NEW.id AND deleted_at IS NULL;
-        UPDATE usr_employee_details SET deleted_at = NOW() WHERE user_id = NEW.id AND deleted_at IS NULL;
-    ELSEIF OLD.deleted_at IS NOT NULL AND NEW.deleted_at IS NULL THEN
-        UPDATE usr_student_details SET deleted_at = NULL WHERE user_id = NEW.id AND deleted_at IS NOT NULL;
-        UPDATE usr_visitor_details SET deleted_at = NULL WHERE user_id = NEW.id AND deleted_at IS NOT NULL;
-        UPDATE usr_employee_details SET deleted_at = NULL WHERE user_id = NEW.id AND deleted_at IS NOT NULL;
-    END IF;
-END
-SQL);
-    });
-  }
+        MigrationSqlFile::runSection('triggers/usr_users_triggers.sql', 'soft_delete_user_details:up');
+    }
 
-  public function down(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() === 'mysql') {
-        DB::unprepared('DROP TRIGGER IF EXISTS `soft_delete_user_details`');
-      }
-    });
-  }
+    public function down(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
+        MigrationSqlFile::runSection('triggers/usr_users_triggers.sql', 'soft_delete_user_details:down');
+    }
 };

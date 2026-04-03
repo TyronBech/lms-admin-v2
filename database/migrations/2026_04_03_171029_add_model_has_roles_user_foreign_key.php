@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() !== 'mysql') {
+    {
+if (DB::getDriverName() !== 'mysql') {
         return;
       }
 
@@ -26,13 +25,11 @@ return new class extends Migration
       if (! $constraintExists) {
         DB::statement('ALTER TABLE model_has_roles ADD CONSTRAINT model_has_roles_mdoel_id_foreign FOREIGN KEY (model_id) REFERENCES usr_users(id) ON DELETE CASCADE ON UPDATE CASCADE');
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() !== 'mysql' || ! Schema::hasTable('model_has_roles')) {
+    {
+if (DB::getDriverName() !== 'mysql' || ! Schema::hasTable('model_has_roles')) {
         return;
       }
 
@@ -45,6 +42,5 @@ return new class extends Migration
       if ($constraintExists) {
         DB::statement('ALTER TABLE model_has_roles DROP FOREIGN KEY model_has_roles_mdoel_id_foreign');
       }
-    });
   }
 };

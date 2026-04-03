@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('bk_categories')) {
+    {
+if (! Schema::hasTable('bk_categories')) {
         Schema::create('bk_categories', function (Blueprint $table): void {
           $table->id();
           $table->string('legend', 12)->nullable();
@@ -27,13 +26,10 @@ return new class extends Migration
           $table->unique('name', 'uniq_categories_name');
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('bk_categories');
-    });
+    {
+Schema::dropIfExists('bk_categories');
   }
 };

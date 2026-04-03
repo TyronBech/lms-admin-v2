@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('ui_settings')) {
+if (! Schema::hasTable('ui_settings')) {
                 Schema::create('ui_settings', function (Blueprint $table): void {
                     $table->id();
                     $table->string('org_name', 100);
@@ -32,13 +31,10 @@ return new class extends Migration
                 DB::statement('ALTER TABLE ui_settings MODIFY org_logo LONGBLOB NOT NULL');
                 DB::statement('ALTER TABLE ui_settings MODIFY org_logo_full LONGBLOB NOT NULL');
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('ui_settings');
-        });
+Schema::dropIfExists('ui_settings');
     }
 };

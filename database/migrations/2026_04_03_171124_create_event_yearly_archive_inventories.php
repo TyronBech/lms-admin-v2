@@ -1,28 +1,26 @@
 <?php
 
+use App\Support\MigrationSqlFile;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-  public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() !== 'mysql') {
-        return;
-      }
+    public function up(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
 
-      DB::unprepared('DROP EVENT IF EXISTS `YearlyArchiveInventories`');
-      DB::unprepared("CREATE EVENT `YearlyArchiveInventories` ON SCHEDULE EVERY 1 YEAR STARTS '2025-03-21 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO CALL ArchiveOldInventories()");
-    });
-  }
+        MigrationSqlFile::runSection('events/YearlyArchiveInventories.sql', 'YearlyArchiveInventories:up');
+    }
 
-  public function down(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() === 'mysql') {
-        DB::unprepared('DROP EVENT IF EXISTS `YearlyArchiveInventories`');
-      }
-    });
-  }
+    public function down(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
+        MigrationSqlFile::runSection('events/YearlyArchiveInventories.sql', 'YearlyArchiveInventories:down');
+    }
 };

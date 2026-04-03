@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('aud_transaction_audit')) {
+if (! Schema::hasTable('aud_transaction_audit')) {
                 Schema::create('aud_transaction_audit', function (Blueprint $table): void {
                     $table->id('audit_id');
                     $table->unsignedBigInteger('transaction_id');
@@ -26,13 +25,10 @@ return new class extends Migration
                     $table->index('transaction_id', 'idx_transaction_id');
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('aud_transaction_audit');
-        });
+Schema::dropIfExists('aud_transaction_audit');
     }
 };

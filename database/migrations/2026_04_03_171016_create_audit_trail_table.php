@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('audit_trail')) {
+if (! Schema::hasTable('audit_trail')) {
                 Schema::create('audit_trail', function (Blueprint $table): void {
                     $table->id();
                     $table->unsignedBigInteger('record_id');
@@ -24,13 +23,10 @@ return new class extends Migration
                     $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('audit_trail');
-        });
+Schema::dropIfExists('audit_trail');
     }
 };

@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('tr_penalties')) {
+if (! Schema::hasTable('tr_penalties')) {
                 Schema::create('tr_penalties', function (Blueprint $table): void {
                     $table->id();
                     $table->foreignId('transaction_id')->constrained('tr_transactions')->cascadeOnDelete()->cascadeOnUpdate();
@@ -24,13 +23,10 @@ return new class extends Migration
                     $table->index('penalty_rule_id', 'fk_penalty_rule_id');
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('tr_penalties');
-        });
+Schema::dropIfExists('tr_penalties');
     }
 };

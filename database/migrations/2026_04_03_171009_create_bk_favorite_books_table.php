@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('bk_favorite_books')) {
+    {
+if (! Schema::hasTable('bk_favorite_books')) {
         Schema::create('bk_favorite_books', function (Blueprint $table): void {
           $table->id();
           $table->foreignId('user_id')->constrained('usr_users')->cascadeOnDelete()->cascadeOnUpdate();
@@ -21,13 +20,10 @@ return new class extends Migration
           $table->unique(['user_id', 'book_id'], 'unique_favorite');
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('bk_favorite_books');
-    });
+    {
+Schema::dropIfExists('bk_favorite_books');
   }
 };

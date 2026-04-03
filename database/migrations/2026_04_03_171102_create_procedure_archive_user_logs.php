@@ -1,57 +1,26 @@
 <?php
 
+use App\Support\MigrationSqlFile;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-  public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() !== 'mysql') {
-        return;
-      }
+    public function up(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
 
-      DB::unprepared('DROP PROCEDURE IF EXISTS `Archive_user_logs`');
-      DB::unprepared(<<<'SQL'
-CREATE PROCEDURE `Archive_user_logs`()
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-        RESIGNAL;
-    END;
+        MigrationSqlFile::runSection('procedures/Archive_user_logs.sql', 'Archive_user_logs:up');
+    }
 
-    START TRANSACTION;
+    public function down(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
 
-    INSERT INTO archive_user_logs (first_name, middle_name, last_name, computer_use, action, timestamp, archived_at)
-    SELECT
-        u.first_name,
-        u.middle_name,
-        u.last_name,
-        l.computer_use,
-        IFNULL(l.remarks, 'Library Visit'),
-        COALESCE(l.time_out, l.time_in, NOW()),
-        NOW()
-    FROM log_user_logs l
-    JOIN usr_users u ON u.id = l.user_id
-    WHERE COALESCE(l.time_out, l.time_in, NOW()) < NOW() - INTERVAL 1 MONTH;
-
-    DELETE FROM log_user_logs
-    WHERE COALESCE(time_out, time_in, NOW()) < NOW() - INTERVAL 1 MONTH;
-
-    COMMIT;
-END
-SQL);
-    });
-  }
-
-  public function down(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() === 'mysql') {
-        DB::unprepared('DROP PROCEDURE IF EXISTS `Archive_user_logs`');
-      }
-    });
-  }
+        MigrationSqlFile::runSection('procedures/Archive_user_logs.sql', 'Archive_user_logs:down');
+    }
 };

@@ -9,23 +9,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (Schema::hasTable('sessions') && ! Schema::hasColumn('sessions', 'login_source')) {
+if (Schema::hasTable('sessions') && ! Schema::hasColumn('sessions', 'login_source')) {
                 Schema::table('sessions', function (Blueprint $table): void {
                     $table->enum('login_source', ['E-Lib', 'Admin', 'Circulation'])->nullable()->after('user_id');
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            if (Schema::hasTable('sessions') && Schema::hasColumn('sessions', 'login_source')) {
+if (Schema::hasTable('sessions') && Schema::hasColumn('sessions', 'login_source')) {
                 Schema::table('sessions', function (Blueprint $table): void {
                     $table->dropColumn('login_source');
                 });
             }
-        });
     }
 };

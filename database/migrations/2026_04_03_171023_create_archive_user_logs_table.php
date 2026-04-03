@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('archive_user_logs')) {
+if (! Schema::hasTable('archive_user_logs')) {
                 Schema::create('archive_user_logs', function (Blueprint $table): void {
                     $table->id();
                     $table->string('first_name', 100);
@@ -22,13 +21,10 @@ return new class extends Migration
                     $table->timestamp('archived_at')->nullable()->useCurrent();
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('archive_user_logs');
-        });
+Schema::dropIfExists('archive_user_logs');
     }
 };

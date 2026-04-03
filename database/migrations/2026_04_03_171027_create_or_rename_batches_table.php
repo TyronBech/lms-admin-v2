@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (Schema::hasTable('job_batches') && ! Schema::hasTable('batches')) {
+if (Schema::hasTable('job_batches') && ! Schema::hasTable('batches')) {
                 Schema::rename('job_batches', 'batches');
             }
 
@@ -28,15 +27,12 @@ return new class extends Migration
                     $table->integer('finished_at')->nullable();
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            if (Schema::hasTable('batches') && ! Schema::hasTable('job_batches')) {
+if (Schema::hasTable('batches') && ! Schema::hasTable('job_batches')) {
                 Schema::rename('batches', 'job_batches');
             }
-        });
     }
 };

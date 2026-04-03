@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('usr_users')) {
+if (! Schema::hasTable('usr_users')) {
                 Schema::create('usr_users', function (Blueprint $table): void {
                     $table->id();
                     $table->string('rfid', 20)->nullable();
@@ -41,13 +40,10 @@ return new class extends Migration
             if (DB::getDriverName() === 'mysql' && Schema::hasTable('usr_users')) {
                 DB::statement('ALTER TABLE usr_users MODIFY profile_image LONGBLOB NULL');
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('usr_users');
-        });
+Schema::dropIfExists('usr_users');
     }
 };

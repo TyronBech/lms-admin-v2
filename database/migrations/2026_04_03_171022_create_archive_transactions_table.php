@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('archive_transactions')) {
+if (! Schema::hasTable('archive_transactions')) {
                 Schema::create('archive_transactions', function (Blueprint $table): void {
                     $table->id('archive_id');
                     $table->unsignedBigInteger('transaction_id');
@@ -45,13 +44,10 @@ return new class extends Migration
                     $table->timestamp('archived_at')->nullable()->useCurrent();
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('archive_transactions');
-        });
+Schema::dropIfExists('archive_transactions');
     }
 };

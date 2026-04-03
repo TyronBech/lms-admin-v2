@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('usr_employee_details')) {
+    {
+if (! Schema::hasTable('usr_employee_details')) {
         Schema::create('usr_employee_details', function (Blueprint $table): void {
           $table->id();
           $table->foreignId('user_id')->constrained('usr_users')->cascadeOnDelete()->cascadeOnUpdate();
@@ -24,13 +23,10 @@ return new class extends Migration
           $table->index('user_id', 'idx_employee_details_user_id');
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('usr_employee_details');
-    });
+    {
+Schema::dropIfExists('usr_employee_details');
   }
 };

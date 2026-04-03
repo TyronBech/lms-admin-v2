@@ -1,39 +1,26 @@
 <?php
 
+use App\Support\MigrationSqlFile;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-  public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() !== 'mysql') {
-        return;
-      }
+    public function up(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
 
-      DB::unprepared('DROP PROCEDURE IF EXISTS `AutoTimeoutUsers`');
-      DB::unprepared(<<<'SQL'
-CREATE PROCEDURE `AutoTimeoutUsers`()
-BEGIN
-    UPDATE log_user_logs
-    SET
-        time_out = TIMESTAMP(CURRENT_DATE, '15:30:00'),
-        remarks = 'System Generated Timeout'
-    WHERE
-        time_out IS NULL
-        AND DATE(time_in) = CURRENT_DATE;
-END
-SQL);
-    });
-  }
+        MigrationSqlFile::runSection('procedures/AutoTimeoutUsers.sql', 'AutoTimeoutUsers:up');
+    }
 
-  public function down(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() === 'mysql') {
-        DB::unprepared('DROP PROCEDURE IF EXISTS `AutoTimeoutUsers`');
-      }
-    });
-  }
+    public function down(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
+        MigrationSqlFile::runSection('procedures/AutoTimeoutUsers.sql', 'AutoTimeoutUsers:down');
+    }
 };

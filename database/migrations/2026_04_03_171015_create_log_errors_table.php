@@ -8,22 +8,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('log_errors')) {
+    {
+if (! Schema::hasTable('log_errors')) {
         Schema::create('log_errors', function (Blueprint $table): void {
           $table->id();
           $table->text('error_message')->nullable();
           $table->dateTime('error_time')->nullable()->useCurrent();
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('log_errors');
-    });
+    {
+Schema::dropIfExists('log_errors');
   }
 };

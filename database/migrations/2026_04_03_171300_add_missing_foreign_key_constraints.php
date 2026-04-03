@@ -11,8 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (DB::getDriverName() !== 'mysql') {
+if (DB::getDriverName() !== 'mysql') {
                 return;
             }
 
@@ -76,7 +75,6 @@ return new class extends Migration
             $addForeignIfMissing('model_has_roles', 'model_id', 'model_has_roles_mdoel_id_foreign', 'usr_users', 'id', 'CASCADE', 'CASCADE');
             $addForeignIfMissing('role_has_permissions', 'permission_id', 'role_has_permissions_permission_id_foreign', 'permissions', 'id', 'CASCADE', 'RESTRICT');
             $addForeignIfMissing('role_has_permissions', 'role_id', 'role_has_permissions_role_id_foreign', 'roles', 'id', 'CASCADE', 'RESTRICT');
-        });
     }
 
     /**
@@ -84,8 +82,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::transaction(function (): void {
-            if (DB::getDriverName() !== 'mysql') {
+if (DB::getDriverName() !== 'mysql') {
                 return;
             }
 
@@ -130,6 +127,5 @@ return new class extends Migration
             $dropIfExists('usr_employee_details', 'usr_employee_details_ibfk_1');
             $dropIfExists('usr_student_details', 'usr_student_details_ibfk_1');
             $dropIfExists('usr_users', 'users_ibfk_1');
-        });
     }
 };

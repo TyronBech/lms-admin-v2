@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('usr_staging_users')) {
+if (! Schema::hasTable('usr_staging_users')) {
                 Schema::create('usr_staging_users', function (Blueprint $table): void {
                     $table->id();
                     $table->string('rfid', 50)->nullable();
@@ -34,13 +33,10 @@ return new class extends Migration
                     $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('usr_staging_users');
-        });
+Schema::dropIfExists('usr_staging_users');
     }
 };

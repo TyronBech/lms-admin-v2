@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('bk_inventories')) {
+    {
+if (! Schema::hasTable('bk_inventories')) {
         Schema::create('bk_inventories', function (Blueprint $table): void {
           $table->id();
           $table->foreignId('book_id')->nullable()->constrained('bk_books')->cascadeOnDelete()->cascadeOnUpdate();
@@ -23,13 +22,10 @@ return new class extends Migration
           $table->index('book_id', 'idx_inventories_book_id');
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('bk_inventories');
-    });
+    {
+Schema::dropIfExists('bk_inventories');
   }
 };

@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
   public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (! Schema::hasTable('aud_book_audit')) {
+    {
+if (! Schema::hasTable('aud_book_audit')) {
         Schema::create('aud_book_audit', function (Blueprint $table): void {
           $table->id();
           $table->unsignedBigInteger('book_id');
@@ -24,13 +23,10 @@ return new class extends Migration
           $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
         });
       }
-    });
   }
 
   public function down(): void
-  {
-    DB::transaction(function (): void {
-      Schema::dropIfExists('aud_book_audit');
-    });
+    {
+Schema::dropIfExists('aud_book_audit');
   }
 };

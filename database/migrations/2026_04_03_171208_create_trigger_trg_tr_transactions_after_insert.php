@@ -1,51 +1,26 @@
 <?php
 
+use App\Support\MigrationSqlFile;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-  public function up(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() !== 'mysql') {
-        return;
-      }
+    public function up(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
 
-      DB::unprepared('DROP TRIGGER IF EXISTS `trg_tr_transactions_after_insert`');
-      DB::unprepared(<<<'SQL'
-CREATE TRIGGER `trg_tr_transactions_after_insert`
-AFTER INSERT ON `tr_transactions`
-FOR EACH ROW
-BEGIN
-    DECLARE actor VARCHAR(50);
-    SET actor = IFNULL(@current_user_id, 'system');
+        MigrationSqlFile::runSection('triggers/tr_transactions_triggers.sql', 'trg_tr_transactions_after_insert:up');
+    }
 
-    IF NEW.user_id IS NOT NULL THEN
-        INSERT INTO audit_trail (record_id, source_table, field_changed, old_value, new_value, action_type, changed_by)
-        VALUES (NEW.id, 'tr_transactions', 'user_id', NULL, CAST(NEW.user_id AS CHAR), 'INSERT', actor);
-    END IF;
+    public function down(): void
+    {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
 
-    IF NEW.book_id IS NOT NULL THEN
-        INSERT INTO audit_trail (record_id, source_table, field_changed, old_value, new_value, action_type, changed_by)
-        VALUES (NEW.id, 'tr_transactions', 'book_id', NULL, CAST(NEW.book_id AS CHAR), 'INSERT', actor);
-    END IF;
-
-    IF NEW.status IS NOT NULL THEN
-        INSERT INTO audit_trail (record_id, source_table, field_changed, old_value, new_value, action_type, changed_by)
-        VALUES (NEW.id, 'tr_transactions', 'status', NULL, NEW.status, 'INSERT', actor);
-    END IF;
-END
-SQL);
-    });
-  }
-
-  public function down(): void
-  {
-    DB::transaction(function (): void {
-      if (DB::getDriverName() === 'mysql') {
-        DB::unprepared('DROP TRIGGER IF EXISTS `trg_tr_transactions_after_insert`');
-      }
-    });
-  }
+        MigrationSqlFile::runSection('triggers/tr_transactions_triggers.sql', 'trg_tr_transactions_after_insert:down');
+    }
 };

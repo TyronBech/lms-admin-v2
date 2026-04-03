@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('usr_visitor_details')) {
+if (! Schema::hasTable('usr_visitor_details')) {
                 Schema::create('usr_visitor_details', function (Blueprint $table): void {
                     $table->id();
                     $table->foreignId('user_id')->constrained('usr_users')->cascadeOnDelete()->cascadeOnUpdate();
@@ -23,13 +22,10 @@ return new class extends Migration
                     $table->index('user_id', 'idx_visitor_details_user_id');
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('usr_visitor_details');
-        });
+Schema::dropIfExists('usr_visitor_details');
     }
 };

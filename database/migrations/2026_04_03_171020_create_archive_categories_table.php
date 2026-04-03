@@ -9,8 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::transaction(function (): void {
-            if (! Schema::hasTable('archive_categories')) {
+if (! Schema::hasTable('archive_categories')) {
                 Schema::create('archive_categories', function (Blueprint $table): void {
                     $table->id('archive_id');
                     $table->unsignedBigInteger('category_id');
@@ -26,13 +25,10 @@ return new class extends Migration
                     $table->timestamp('archived_at')->useCurrent();
                 });
             }
-        });
     }
 
     public function down(): void
     {
-        DB::transaction(function (): void {
-            Schema::dropIfExists('archive_categories');
-        });
+Schema::dropIfExists('archive_categories');
     }
 };
