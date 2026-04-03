@@ -19,7 +19,7 @@ if (! Schema::hasTable('usr_staging_users')) {
                     $table->string('suffix', 10)->nullable();
                     $table->enum('gender', ['Male', 'Female', 'Prefer not to say']);
                     $table->string('email');
-                    $table->string('password')->nullable()->default('123');
+                    $table->string('password')->nullable();
                     $table->binary('profile_image')->nullable();
                     $table->enum('user_type', ['student', 'employee', 'visitor']);
                     $table->string('id_number', 20)->nullable();

@@ -15,7 +15,7 @@ BEGIN
 
     INSERT INTO log_user_logs (user_id, computer_use, time_in, time_out, remarks, created_at, updated_at)
     SELECT
-        u.id,
+        a.user_id,
         a.computer_use,
         a.timestamp,
         a.timestamp,
@@ -23,10 +23,8 @@ BEGIN
         NOW(),
         NOW()
     FROM archive_user_logs a
-    JOIN usr_users u
-      ON u.first_name = a.first_name
-     AND u.last_name = a.last_name
-    WHERE DATE(a.timestamp) = restore_date;
+    WHERE DATE(a.timestamp) = restore_date
+      AND a.user_id IS NOT NULL;
 
     DELETE FROM archive_user_logs WHERE DATE(timestamp) = restore_date;
 

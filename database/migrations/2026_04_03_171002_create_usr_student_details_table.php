@@ -20,7 +20,9 @@ if (! Schema::hasTable('usr_student_details')) {
           $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
           $table->dateTime('deleted_at')->nullable();
 
-          $table->unique(['id_number', 'deleted_at'], 'uniq_student_details_id_number');
+          $table->string('active_id_number', 20)->storedAs('CASE WHEN deleted_at IS NULL THEN id_number ELSE NULL END');
+
+          $table->unique('active_id_number', 'uniq_student_details_id_number');
           $table->index('user_id', 'idx_student_details_user_id');
         });
       }

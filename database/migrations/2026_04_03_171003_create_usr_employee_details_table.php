@@ -19,7 +19,9 @@ if (! Schema::hasTable('usr_employee_details')) {
           $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
           $table->dateTime('deleted_at')->nullable();
 
-          $table->unique(['employee_id', 'deleted_at'], 'uniq_employee_details_employee_id');
+          $table->string('active_employee_id', 50)->storedAs('CASE WHEN deleted_at IS NULL THEN employee_id ELSE NULL END');
+
+          $table->unique('active_employee_id', 'uniq_employee_details_employee_id');
           $table->index('user_id', 'idx_employee_details_user_id');
         });
       }

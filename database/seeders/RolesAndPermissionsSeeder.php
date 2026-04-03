@@ -56,7 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ];
 
             foreach ($permissions as $permission) {
-                Permission::findOrCreate($permission, 'admin');
+                Permission::findOrCreate($permission, 'web');
             }
 
             $roles = [
@@ -68,16 +68,16 @@ class RolesAndPermissionsSeeder extends Seeder
             ];
 
             foreach ($roles as $role) {
-                Role::findOrCreate($role, 'admin');
+                Role::findOrCreate($role, 'web');
             }
 
             $superAdmin = Role::where('name', 'Super Admin')
-                ->where('guard_name', 'admin')
+                ->where('guard_name', 'web')
                 ->first();
 
             if ($superAdmin) {
                 $superAdmin->syncPermissions(
-                    Permission::where('guard_name', 'admin')->pluck('name')->all()
+                    Permission::where('guard_name', 'web')->pluck('name')->all()
                 );
             }
 

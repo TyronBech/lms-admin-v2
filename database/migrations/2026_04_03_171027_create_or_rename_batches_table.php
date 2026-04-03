@@ -1,38 +1,18 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up(): void
     {
-if (Schema::hasTable('job_batches') && ! Schema::hasTable('batches')) {
-                Schema::rename('job_batches', 'batches');
-            }
-
-            if (! Schema::hasTable('batches')) {
-                Schema::create('batches', function (Blueprint $table): void {
-                    $table->string('id')->primary();
-                    $table->string('name');
-                    $table->integer('total_jobs');
-                    $table->integer('pending_jobs');
-                    $table->integer('failed_jobs');
-                    $table->longText('failed_job_ids');
-                    $table->mediumText('options')->nullable();
-                    $table->integer('cancelled_at')->nullable();
-                    $table->integer('created_at');
-                    $table->integer('finished_at')->nullable();
-                });
-            }
+        // job_batches is already created by the default Laravel jobs migration.
+        // Laravel's queue batching config (config/queue.php) uses 'job_batches'.
+        // No renaming needed.
     }
 
     public function down(): void
     {
-if (Schema::hasTable('batches') && ! Schema::hasTable('job_batches')) {
-                Schema::rename('batches', 'job_batches');
-            }
+        // Nothing to reverse.
     }
 };

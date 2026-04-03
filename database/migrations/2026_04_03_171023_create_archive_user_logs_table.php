@@ -12,6 +12,7 @@ return new class extends Migration
 if (! Schema::hasTable('archive_user_logs')) {
                 Schema::create('archive_user_logs', function (Blueprint $table): void {
                     $table->id();
+                    $table->unsignedBigInteger('user_id')->nullable();
                     $table->string('first_name', 100);
                     $table->string('middle_name', 100)->nullable();
                     $table->string('last_name', 100);

@@ -22,7 +22,7 @@ if (! Schema::hasTable('usr_users')) {
                     $table->binary('profile_image')->nullable();
                     $table->string('email', 50)->nullable();
                     $table->timestamp('email_verified_at')->nullable();
-                    $table->string('password')->default('123');
+                    $table->string('password');
                     $table->boolean('two_factor_enabled')->default(false);
                     $table->string('two_factor_secret')->nullable();
                     $table->text('two_factor_backup_codes')->nullable();
@@ -31,8 +31,16 @@ if (! Schema::hasTable('usr_users')) {
                     $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
                     $table->timestamp('deleted_at')->nullable();
 
-                    $table->unique(['email', 'deleted_at'], 'uniq_users_email');
-                    $table->unique(['rfid', 'deleted_at'], 'uniq_users_rfid');
+                    // Generated columns for soft-delete-aware uniqueness.
+                    // MySQL UNIQUE indexes allow multiple NULLs, so when a row is deleted
+                    // (deleted_at IS NOT NULL) these columns return NULL — allowing
+                    // multiple deleted rows with the same email/rfid — while still
+                    // enforcing uniqueness among active (non-deleted) rows.
+                    $table->string('active_email', 50)->storedAs('CASE WHEN deleted_at IS NULL THEN email ELSE NULL END');
+                    $table->string('active_rfid', 20)->storedAs('CASE WHEN deleted_at IS NULL THEN rfid ELSE NULL END');
+
+                    $table->unique('active_email', 'uniq_users_email');
+                    $table->unique('active_rfid', 'uniq_users_rfid');
                     $table->index('privilege_id', 'idx_users_privilege_id');
                 });
             }

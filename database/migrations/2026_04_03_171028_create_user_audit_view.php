@@ -9,7 +9,7 @@ return new class extends Migration
     {
 if (DB::getDriverName() === 'mysql') {
         DB::statement('DROP VIEW IF EXISTS user_audit_view');
-        DB::statement('CREATE VIEW user_audit_view AS SELECT id, user_id, source_table, field_changed, old_value, new_value, change_type, changed_by, changed_date, created_at, updated_at FROM aud_user_audit');
+        DB::statement('CREATE VIEW user_audit_view AS SELECT id, record_id AS user_id, source_table, field_changed, old_value, new_value, action_type AS change_type, changed_by, created_at, updated_at FROM audit_trail');
       }
   }
 

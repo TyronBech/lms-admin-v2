@@ -12,7 +12,7 @@ return new class extends Migration
             return;
         }
 
-        MigrationSqlFile::runSection('triggers/bk_books_triggers.sql', 'trg_books_after_delete:up');
+        MigrationSqlFile::runSection('triggers/bk_books_triggers.sql', 'trg_books_after_soft_delete:up');
     }
 
     public function down(): void
@@ -21,6 +21,6 @@ return new class extends Migration
             return;
         }
 
-        MigrationSqlFile::runSection('triggers/bk_books_triggers.sql', 'trg_books_after_delete:down');
+        MigrationSqlFile::runSection('triggers/bk_books_triggers.sql', 'trg_books_after_soft_delete:down');
     }
 };

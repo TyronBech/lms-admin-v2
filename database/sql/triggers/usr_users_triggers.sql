@@ -20,8 +20,7 @@ BEGIN
         (NEW.id, 'usr_users', 'last_name', NULL, NEW.last_name, 'INSERT', actor),
         (NEW.id, 'usr_users', 'suffix', NULL, NEW.suffix, 'INSERT', actor),
         (NEW.id, 'usr_users', 'gender', NULL, NEW.gender, 'INSERT', actor),
-        (NEW.id, 'usr_users', 'email', NULL, NEW.email, 'INSERT', actor),
-        (NEW.id, 'usr_users', 'password', NULL, NEW.password, 'INSERT', actor);
+        (NEW.id, 'usr_users', 'email', NULL, NEW.email, 'INSERT', actor);
 END;
 -- [end]
 
@@ -107,8 +106,7 @@ BEGIN
         (OLD.id, 'usr_users', 'last_name', OLD.last_name, NULL, 'DELETE', actor, NOW(), NOW()),
         (OLD.id, 'usr_users', 'suffix', OLD.suffix, NULL, 'DELETE', actor, NOW(), NOW()),
         (OLD.id, 'usr_users', 'gender', OLD.gender, NULL, 'DELETE', actor, NOW(), NOW()),
-        (OLD.id, 'usr_users', 'email', OLD.email, NULL, 'DELETE', actor, NOW(), NOW()),
-        (OLD.id, 'usr_users', 'password', OLD.password, NULL, 'DELETE', actor, NOW(), NOW());
+        (OLD.id, 'usr_users', 'email', OLD.email, NULL, 'DELETE', actor, NOW(), NOW());
 END;
 -- [end]
 

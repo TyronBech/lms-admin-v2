@@ -17,28 +17,41 @@ END;
 -- [trg_books_after_insert:down]
 DROP TRIGGER IF EXISTS `trg_books_after_insert`;
 -- [end]
--- [trg_books_after_delete:up]
+-- [trg_books_after_soft_delete:up]
 DROP TRIGGER IF EXISTS `trg_books_after_delete`;
-CREATE TRIGGER `trg_books_after_delete`
+DROP TRIGGER IF EXISTS `trg_books_after_soft_delete`;
+CREATE TRIGGER `trg_books_after_soft_delete`
 AFTER UPDATE ON `bk_books`
 FOR EACH ROW
 BEGIN
     IF OLD.deleted_at IS NULL AND NEW.deleted_at IS NOT NULL THEN
+        -- Book was soft-deleted
         UPDATE bk_categories
         SET discarded = discarded + 1,
             present_inventory = present_inventory - 1
         WHERE id = NEW.category_id;
     ELSEIF OLD.deleted_at IS NOT NULL AND NEW.deleted_at IS NULL THEN
+        -- Book was restored
         UPDATE bk_categories
         SET discarded = discarded - 1,
             present_inventory = present_inventory + 1
+        WHERE id = NEW.category_id;
+    ELSEIF OLD.deleted_at IS NULL AND NEW.deleted_at IS NULL AND NOT (OLD.category_id <=> NEW.category_id) THEN
+        -- Book's category was changed while active; adjust present_inventory only.
+        -- newly_acquired reflects books added in the current year, not category membership.
+        UPDATE bk_categories
+        SET present_inventory = present_inventory - 1
+        WHERE id = OLD.category_id;
+
+        UPDATE bk_categories
+        SET present_inventory = present_inventory + 1
         WHERE id = NEW.category_id;
     END IF;
 END;
 -- [end]
 
--- [trg_books_after_delete:down]
-DROP TRIGGER IF EXISTS `trg_books_after_delete`;
+-- [trg_books_after_soft_delete:down]
+DROP TRIGGER IF EXISTS `trg_books_after_soft_delete`;
 -- [end]
 -- [trg_bk_books_after_insert:up]
 DROP TRIGGER IF EXISTS `trg_bk_books_after_insert`;

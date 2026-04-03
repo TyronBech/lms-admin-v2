@@ -13,8 +13,9 @@ BEGIN
 
     START TRANSACTION;
 
-    INSERT INTO archive_user_logs (first_name, middle_name, last_name, computer_use, action, timestamp, archived_at)
+    INSERT INTO archive_user_logs (user_id, first_name, middle_name, last_name, computer_use, action, timestamp, archived_at)
     SELECT
+        u.id,
         u.first_name,
         u.middle_name,
         u.last_name,

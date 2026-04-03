@@ -33,7 +33,9 @@ if (! Schema::hasTable('bk_books')) {
                     $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
                     $table->timestamp('deleted_at')->nullable();
 
-                    $table->unique(['accession', 'deleted_at'], 'uniq_book_accession');
+                    $table->string('active_accession', 20)->storedAs('CASE WHEN deleted_at IS NULL THEN accession ELSE NULL END');
+
+                    $table->unique('active_accession', 'uniq_book_accession');
                     $table->index('category_id', 'idx_book_category_id');
                 });
             }

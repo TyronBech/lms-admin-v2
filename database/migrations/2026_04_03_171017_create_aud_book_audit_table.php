@@ -1,32 +1,17 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  public function up(): void
+    public function up(): void
     {
-if (! Schema::hasTable('aud_book_audit')) {
-        Schema::create('aud_book_audit', function (Blueprint $table): void {
-          $table->id();
-          $table->unsignedBigInteger('book_id');
-          $table->string('field_changed', 50);
-          $table->text('old_value')->nullable();
-          $table->text('new_value')->nullable();
-          $table->enum('change_type', ['INSERT', 'UPDATE', 'DELETE']);
-          $table->string('changed_by', 50);
-          $table->timestamp('changed_date')->nullable()->useCurrent();
-          $table->timestamp('created_at')->nullable()->useCurrent();
-          $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
-        });
-      }
-  }
+        // aud_* tables use a legacy prefix. All audit logging is handled by
+        // the audit_trail table via MySQL triggers. No new aud_* tables are created.
+    }
 
-  public function down(): void
+    public function down(): void
     {
-Schema::dropIfExists('aud_book_audit');
-  }
+        // Nothing to reverse.
+    }
 };

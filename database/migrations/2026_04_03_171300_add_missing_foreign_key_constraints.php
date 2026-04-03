@@ -28,6 +28,10 @@ if (DB::getDriverName() !== 'mysql') {
                     return;
                 }
 
+                if (! Schema::hasColumn($table, $column) || ! Schema::hasColumn($referencedTable, $referencedColumn)) {
+                    return;
+                }
+
                 $alreadyConstrained = DB::table('information_schema.KEY_COLUMN_USAGE')
                     ->whereRaw('TABLE_SCHEMA = DATABASE()')
                     ->where('TABLE_NAME', $table)
@@ -72,7 +76,10 @@ if (DB::getDriverName() !== 'mysql') {
 
             $addForeignIfMissing('model_has_permissions', 'permission_id', 'model_has_permissions_permission_id_foreign', 'permissions', 'id', 'CASCADE', 'RESTRICT');
             $addForeignIfMissing('model_has_roles', 'role_id', 'model_has_roles_role_id_foreign', 'roles', 'id', 'CASCADE', 'RESTRICT');
-            $addForeignIfMissing('model_has_roles', 'model_id', 'model_has_roles_mdoel_id_foreign', 'usr_users', 'id', 'CASCADE', 'CASCADE');
+            // model_has_roles.model_id is intentionally excluded: Spatie Permission uses a
+            // polymorphic (model_id + model_type) pattern, so a hard FK on model_id alone
+            // would break role assignments for non-usr_users models.
+            // (A previous migration attempted to add this FK; that migration was reverted.)
             $addForeignIfMissing('role_has_permissions', 'permission_id', 'role_has_permissions_permission_id_foreign', 'permissions', 'id', 'CASCADE', 'RESTRICT');
             $addForeignIfMissing('role_has_permissions', 'role_id', 'role_has_permissions_role_id_foreign', 'roles', 'id', 'CASCADE', 'RESTRICT');
     }
@@ -109,7 +116,6 @@ if (DB::getDriverName() !== 'mysql') {
 
             $dropIfExists('role_has_permissions', 'role_has_permissions_role_id_foreign');
             $dropIfExists('role_has_permissions', 'role_has_permissions_permission_id_foreign');
-            $dropIfExists('model_has_roles', 'model_has_roles_mdoel_id_foreign');
             $dropIfExists('model_has_roles', 'model_has_roles_role_id_foreign');
             $dropIfExists('model_has_permissions', 'model_has_permissions_permission_id_foreign');
             $dropIfExists('log_user_logs', 'log_user_logs_ibfk_1');
