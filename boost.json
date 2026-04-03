@@ -1,0 +1,21 @@
+{
+    "agents": [
+        "copilot"
+    ],
+    "packages": [
+        "laravel/fortify",
+        "spatie/laravel-backup",
+        "spatie/laravel-pdf",
+        "spatie/laravel-permission"
+    ],
+    "skills": [
+        "laravel-best-practices",
+        "wayfinder-development",
+        "inertia-react-development",
+        "tailwindcss-development",
+        "fortify-development",
+        "laravel-backup",
+        "laravel-pdf",
+        "laravel-permission-development"
+    ]
+}
