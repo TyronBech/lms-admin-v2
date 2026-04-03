@@ -55,40 +55,206 @@ DB::statement('CALL AutoTimeoutUsers()');
 DB::statement('CALL DistributeStagingUsers()');
  
 // Example: set actor for audit trail before any write
-DB::statement('SET @current_user_id = ?', [$adminId]);
+DB::statement('SET @current_user_id = ?', [Auth::id()]);
 ```
-
-### MySQL SQL Files Organization
-
-Store all database-level logic as raw `.sql` files — do NOT embed triggers or procedures in migrations:
-
+ 
+### Database Transaction Pattern (ALWAYS use this for any write operation)
+Every write operation that touches the database MUST follow this exact pattern.
+This ensures the audit trail trigger receives the correct actor and all writes are atomic.
+ 
+Use `Auth::id()` — NOT `Auth::guard('admin')` — since Laravel 13 with Breeze uses
+the default `web` guard. Only use a named guard if the project explicitly configures one.
+ 
+```php
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+ 
+DB::beginTransaction();
+try {
+    // Always set the audit trail actor FIRST, before any Eloquent or DB write.
+    // This MySQL session variable is read by all triggers on bk_books,
+    // tr_transactions, usr_users, and detail tables to identify who made the change.
+    DB::statement('SET @current_user_id = ?', [Auth::id()]);
+ 
+    // --- Your Eloquent write operations here ---
+    // e.g. $book->update([...]);
+ 
+    DB::commit();
+} catch (\Throwable $e) {
+    DB::rollBack();
+    Log::error('[Module][Action] Database error', [
+        'user_id'   => Auth::id(),
+        'error'     => $e->getMessage(),
+        'trace'     => $e->getTraceAsString(),
+        'ip'        => request()->ip(),
+        'timestamp' => now()->toDateTimeString(),
+    ]);
+    throw $e;
+}
 ```
-database/sql/
-├── triggers/
-│   ├── bk_books_triggers.sql
-│   ├── tr_transactions_triggers.sql
-│   ├── usr_users_triggers.sql
-│   ├── usr_student_details_triggers.sql
-│   ├── usr_employee_details_triggers.sql
-│   ├── usr_visitor_details_triggers.sql
-│   └── sessions_triggers.sql
-├── procedures/
-│   ├── AutoTimeoutUsers.sql
-│   ├── DistributeStagingUsers.sql
-│   ├── RestoreLastDistributedUsers.sql
-│   ├── archive_transactions.sql
-│   ├── Archive_user_logs.sql
-│   ├── ArchiveOldInventories.sql
-│   ├── RestoreArchivedInventory.sql
-│   ├── restore_user_logs.sql
-│   └── update_summary_matrix.sql
-└── events/
-    ├── AutoTimeoutEvent.sql
-    ├── mark_transactions_overdue.sql
-    ├── monthly_archived_transactions.sql
-    ├── monthly_archive_user_logs.sql
-    └── YearlyArchiveInventories.sql
+ 
+**Rules for this pattern:**
+- `DB::statement('SET @current_user_id = ?', [Auth::id()])` MUST always be the
+  FIRST statement inside `DB::beginTransaction()`, before any model write.
+  The MySQL session variable is connection-scoped — it must live inside the same
+  transaction as the writes or the triggers will log 'system' as the actor instead.
+- Always catch `\Throwable` (not just `\Exception`) to also catch PHP errors and
+  type errors that would otherwise leave the transaction open.
+- Always call `DB::rollBack()` before logging or re-throwing inside the catch block.
+- For stored procedure calls that manage their own internal transactions
+  (e.g., DistributeStagingUsers), still wrap them in `DB::beginTransaction()` so
+  connection-level failures are caught and rolled back correctly.
+- Never set `@current_user_id` outside a transaction block.
+ 
+---
+ 
+## Application Logging Standards (STRICTLY FOLLOW)
+ 
+Every controller action that reads or writes data MUST produce structured log entries
+using Laravel's `Log` facade. Logs serve as the application-level activity trail
+complementing the database-level `audit_trail` table written by MySQL triggers.
+ 
+### Log Format
+All log entries must follow this exact key structure. The `[Module][Action]` prefix
+in the message makes logs filterable and searchable in log monitoring tools.
+ 
 ```
+[Module][Action] Descriptive message
+```
+ 
+**Module** = the domain (e.g., Books, Users, Transactions, Logs, Reports, Settings)
+**Action** = the specific operation (e.g., View, Store, Update, Delete, Export, Timeout)
+ 
+### Three Required Log Levels
+ 
+**1. info — Page access and successful operations**
+Log an `info` entry when a user accesses a page or when an action completes successfully.
+ 
+```php
+// On page access (at the start of an index/show method)
+Log::info('[Books][View] Book list accessed', [
+    'user_id'   => Auth::id(),
+    'ip'        => $request->ip(),
+    'timestamp' => now()->toDateTimeString(),
+]);
+ 
+// On successful write (inside the try block, after DB::commit())
+Log::info('[Books][Update] Book updated successfully', [
+    'user_id'   => Auth::id(),
+    'book_id'   => $book->id,
+    'accession' => $book->accession,
+    'ip'        => $request->ip(),
+    'timestamp' => now()->toDateTimeString(),
+]);
+```
+ 
+**2. warning — Validation failures and business rule violations**
+Log a `warning` when a request fails validation or violates a business rule
+(e.g., trying to borrow an already-borrowed book).
+ 
+```php
+Log::warning('[Books][Update] Validation failed', [
+    'user_id'   => Auth::id(),
+    'errors'    => $validator->errors()->toArray(),
+    'input'     => $request->safe()->except(['password']),
+    'ip'        => $request->ip(),
+    'timestamp' => now()->toDateTimeString(),
+]);
+```
+ 
+**3. error — Exceptions and database failures**
+Log an `error` inside every catch block. Always include the exception message and trace.
+This is already shown in the transaction pattern above but repeated here for clarity.
+ 
+```php
+Log::error('[Transactions][Store] Database error during borrow', [
+    'user_id'   => Auth::id(),
+    'error'     => $e->getMessage(),
+    'trace'     => $e->getTraceAsString(),
+    'ip'        => $request->ip(),
+    'timestamp' => now()->toDateTimeString(),
+]);
+```
+ 
+### What to Include in Context Arrays
+ 
+| Key | When to include | Value source |
+|---|---|---|
+| `user_id` | Always | `Auth::id()` |
+| `ip` | Always | `$request->ip()` |
+| `timestamp` | Always | `now()->toDateTimeString()` |
+| `errors` | warning level only | `$validator->errors()->toArray()` |
+| `error` | error level only | `$e->getMessage()` |
+| `trace` | error level only | `$e->getTraceAsString()` |
+| `{model}_id` | On write operations | The ID of the record being acted on |
+| `input` | On warning for validation | `$request->safe()->except(['password'])` |
+ 
+### Full Controller Method Example
+This shows all three log levels together in a single update method:
+ 
+```php
+public function update(UpdateBookRequest $request, Book $book): RedirectResponse
+{
+    // 1. Log page action intent (info)
+    Log::info('[Books][Update] Attempting to update book', [
+        'user_id'   => Auth::id(),
+        'book_id'   => $book->id,
+        'accession' => $book->accession,
+        'ip'        => $request->ip(),
+        'timestamp' => now()->toDateTimeString(),
+    ]);
+ 
+    // Validation is handled by UpdateBookRequest (Form Request).
+    // If it fails, Laravel automatically redirects back with errors.
+    // Add a warning log in the Form Request's failedValidation() method if needed.
+ 
+    DB::beginTransaction();
+    try {
+        DB::statement('SET @current_user_id = ?', [Auth::id()]);
+ 
+        $book->update($request->validated());
+ 
+        DB::commit();
+ 
+        // 2. Log success (info)
+        Log::info('[Books][Update] Book updated successfully', [
+            'user_id'   => Auth::id(),
+            'book_id'   => $book->id,
+            'accession' => $book->accession,
+            'ip'        => $request->ip(),
+            'timestamp' => now()->toDateTimeString(),
+        ]);
+ 
+        return redirect()->back()->with('success', 'Book updated successfully.');
+ 
+    } catch (\Throwable $e) {
+        DB::rollBack();
+ 
+        // 3. Log failure (error)
+        Log::error('[Books][Update] Database error during update', [
+            'user_id'   => Auth::id(),
+            'book_id'   => $book->id,
+            'error'     => $e->getMessage(),
+            'trace'     => $e->getTraceAsString(),
+            'ip'        => $request->ip(),
+            'timestamp' => now()->toDateTimeString(),
+        ]);
+ 
+        return redirect()->back()->with('error', 'Something went wrong. Please try again.');
+    }
+}
+```
+ 
+### Logging Rules Summary
+- ALWAYS log `info` when a user accesses any page (index, show, create, edit methods).
+- ALWAYS log `info` after a successful DB::commit().
+- ALWAYS log `warning` when validation fails — include the errors array.
+- ALWAYS log `error` inside every catch block — include message and trace.
+- NEVER log passwords, tokens, or sensitive personal data in any log entry.
+- NEVER use `Log::debug()` in production code paths — use `info`, `warning`, or `error` only.
+- ALWAYS use the `[Module][Action]` prefix format for the log message string.
+- The `timestamp` key must always use `now()->toDateTimeString()` for consistent formatting.
  
 ---
  
@@ -285,5 +451,14 @@ export interface Transaction {
   all UI components are built with Tailwind CSS from scratch
 - Do NOT forget to declare `protected $table` on every model (tables are prefixed)
 - Do NOT call stored procedures with raw PDO — use `DB::statement('CALL ...')`
-- Do NOT write raw SQL queries with DB::select or DB::statement except when calling stored procedures or using MATCH AGAINST for full-text search
-- Do NOT write any new database migrations for logic that is already handled by stored procedures or triggers
+- Do NOT write raw SQL queries with DB::select or DB::statement except when calling
+  stored procedures or using MATCH AGAINST for full-text search
+- Do NOT write any new database migrations for logic already handled by stored procedures or triggers
+- Do NOT set `@current_user_id` outside a `DB::beginTransaction()` block
+- Do NOT use `Auth::guard('admin')` — use `Auth::id()` and `Auth::user()` with the default web guard
+- Do NOT catch `\Exception` alone in try/catch — always catch `\Throwable` to handle PHP errors too
+- Do NOT skip the `DB::rollBack()` call in a catch block even if you are re-throwing the exception
+- Do NOT log passwords, tokens, or raw personal data (RFID, email) in log context arrays
+- Do NOT use `Log::debug()` in production code paths — only `info`, `warning`, and `error`
+- Do NOT write a log entry without the `[Module][Action]` prefix format in the message string
+```
