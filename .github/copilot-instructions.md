@@ -1,20 +1,20 @@
 # BPS LMS v2 — GitHub Copilot Instructions
-
+ 
 ## Project Overview
 This is the BPS Library Management System v2, an admin portal for managing
 library operations at Bicutan Parochial School. The backend is Laravel 13.
 The frontend is React TypeScript using Inertia.js. There are three portals:
 Admin, Circulation, and E-Lib, identified by the `login_source` field in
 the `sessions` table.
-
+ 
 ---
-
+ 
 ## Database Schema & Naming Conventions
-
+ 
 ### Table Prefix Convention (STRICTLY FOLLOW)
 All custom tables follow a prefix-based naming convention. Always use the
 correct prefix when referencing or creating tables.
-
+ 
 - `bk_`     → Books domain: bk_books, bk_categories, bk_inventories, bk_favorite_books
 - `usr_`    → Users domain: usr_users, usr_student_details, usr_employee_details, usr_visitor_details, usr_staging_users
 - `tr_`     → Transactions domain: tr_transactions, tr_penalties
@@ -24,7 +24,7 @@ correct prefix when referencing or creating tables.
 - No prefix → Standalone: audit_trail, notifications, penalty_rules, privileges, system_settings, ui_settings
 - Spatie    → roles, permissions, model_has_roles, model_has_permissions, role_has_permissions
 - Laravel   → sessions, migrations, cache, jobs, failed_jobs, password_reset_tokens
-
+ 
 ### Key Schema Facts
 - There is NO separate admins table. All users (patrons and admins) are in `usr_users`.
   Admin-level access is controlled via Spatie roles assigned to `usr_users` records.
@@ -44,15 +44,189 @@ correct prefix when referencing or creating tables.
 - `usr_staging_users` is the pending registration queue. Users are promoted to `usr_users`
   via the `DistributeStagingUsers` stored procedure — do NOT write a PHP migration for this logic.
 - `sessions` table has a custom `login_source` enum: 'E-Lib', 'Admin', 'Circulation'.
-
+ 
 ### Calling Stored Procedures from Laravel
 When invoking stored procedures, always use DB::statement or DB::select:
 ```php
 // Example: trigger auto-timeout
 DB::statement('CALL AutoTimeoutUsers()');
-
+ 
 // Example: distribute staging users
 DB::statement('CALL DistributeStagingUsers()');
-
+ 
 // Example: set actor for audit trail before any write
 DB::statement('SET @current_user_id = ?', [$adminId]);
+```
+ 
+---
+ 
+## Backend — Laravel 13 Rules (STRICTLY FOLLOW)
+ 
+- Always use Laravel 13 syntax and conventions. Do not suggest deprecated patterns.
+- Controllers must be single-action or resource controllers. No fat controllers.
+- All business logic must go into Service classes under `app/Services/`.
+- Use Form Request classes for all validation — NEVER validate in controllers.
+- Use Eloquent — NEVER write raw SQL unless calling a stored procedure or
+  a query involving MySQL full-text search (MATCH AGAINST).
+- All models must use `$fillable`. Never use `$guarded = []`.
+- Always define model relationships. Table names must match the prefix convention above.
+- Use `protected $table = 'bk_books';` on every model since table names are prefixed.
+- Use Spatie Permission's `can()` or `hasRole()` for all authorization checks.
+- Use `App\Http\Requests\*` for all form validation.
+- Use `App\Http\Resources\*` for JSON responses when needed.
+- Follow PSR-12 enforced by Laravel Pint.
+- Always write PHPDoc blocks on all methods and classes.
+- Use `App\Enum\PermissionEnum` and `App\Enum\RoleEnum` for role/permission constants.
+ 
+### Model Table Bindings (ALWAYS use these)
+```php
+// Correct — always declare $table explicitly
+protected $table = 'bk_books';        // Book model
+protected $table = 'bk_categories';   // Category model
+protected $table = 'bk_inventories';  // Inventory model
+protected $table = 'usr_users';       // User model
+protected $table = 'usr_student_details';
+protected $table = 'usr_employee_details';
+protected $table = 'usr_visitor_details';
+protected $table = 'usr_staging_users';
+protected $table = 'tr_transactions'; // Transaction model
+protected $table = 'tr_penalties';    // Penalty model
+protected $table = 'log_user_logs';   // UserLog model
+protected $table = 'audit_trail';     // AuditTrail model
+protected $table = 'privileges';      // Privilege model
+protected $table = 'penalty_rules';   // PenaltyRule model
+protected $table = 'notifications';   // Notification model
+protected $table = 'ui_settings';     // UiSetting model
+protected $table = 'system_settings'; // SystemSetting model
+```
+ 
+### Soft Delete Models
+The following models use `SoftDeletes`:
+bk_books, bk_categories, bk_inventories, usr_users, usr_student_details,
+usr_employee_details, usr_visitor_details, tr_transactions, tr_penalties,
+penalty_rules, privileges, ui_settings
+ 
+---
+ 
+## Frontend — React TypeScript + Inertia.js Rules (STRICTLY FOLLOW)
+ 
+- All pages live in `resources/js/Pages/` as `.tsx` files.
+- Use Inertia `<Link>` for ALL internal navigation — never use `<a href>`.
+- Use Inertia `useForm()` hook for ALL form submissions — never use fetch() directly.
+- Use `usePage()` to access shared props (auth user, flash messages, etc.).
+- All reusable components go in `resources/js/Components/`.
+- All layouts go in `resources/js/Layouts/` (AdminLayout, CirculationLayout).
+- All TypeScript interfaces go in `resources/js/Types/` — NO `any` types allowed.
+- Use Tailwind CSS for all styling. Build all UI components (tables, modals, cards,
+  badges, sidebars, dropdowns) from scratch using Tailwind utility classes.
+  Do NOT install pre-built component libraries — AI will generate the components.
+- Use `clsx` for conditional class names.
+- Use `dayjs` for all date formatting (due dates, time-in/out, transaction dates).
+- Use `react-apexcharts` as the ONLY charting library. Do not use chart.js, recharts,
+  or any other chart library. All dashboard charts (line, bar, area, donut) must use
+  ApexCharts via the `react-apexcharts` wrapper.
+- Use `@heroicons/react` for all icons.
+ 
+### TypeScript Type Conventions
+Always define types matching the actual DB columns. Examples:
+ 
+```typescript
+// resources/js/Types/index.ts
+ 
+export interface User {
+  id: number;
+  rfid: string | null;
+  privilege_id: number | null;
+  first_name: string;
+  middle_name: string | null;
+  last_name: string;
+  suffix: string | null;
+  gender: 'Male' | 'Female' | 'Prefer not to say';
+  email: string | null;
+  two_factor_enabled: boolean;
+  created_at: string;
+  deleted_at: string | null;
+  privilege?: Privilege;
+  student_detail?: StudentDetail;
+  employee_detail?: EmployeeDetail;
+  visitor_detail?: VisitorDetail;
+}
+ 
+export interface Book {
+  id: number;
+  accession: string;
+  call_number: string | null;
+  title: string;
+  author: string | null;
+  book_type: 'physical' | 'ebook';
+  edition: string | null;
+  remarks: 'On Shelf' | 'Missing' | 'Lost' | 'Discarded' | 'Lost And Paid For';
+  availability_status: 'Available' | 'Unavailable' | 'Borrowed' | 'In Use' | 'Reserved';
+  condition_status: 'New' | 'Good' | 'Fair' | 'Poor';
+  category_id: number;
+  category?: Category;
+}
+ 
+export interface Transaction {
+  id: number;
+  user_id: number;
+  book_id: number;
+  transaction_type: 'Borrowed' | 'Returned' | 'Reserved';
+  status: 'Borrowed' | 'Pending' | 'Available for pick up' | 'Completed' | 'Overdue' | 'Cancelled' | 'Lost' | 'Missing' | 'Renew';
+  penalty_status: 'No Penalty' | 'Paid' | 'Unpaid' | 'Waived';
+  penalty_total: number;
+  date_borrowed: string | null;
+  due_date: string | null;
+  return_date: string | null;
+  reserved_date: string | null;
+  pickup_deadline: string | null;
+}
+```
+ 
+---
+ 
+## File Naming Conventions
+ 
+- Laravel Controllers: PascalCase, suffixed with `Controller` (e.g., `BookController`)
+- Laravel Services: PascalCase, suffixed with `Service` (e.g., `TransactionService`)
+- Laravel Models: PascalCase, singular (e.g., `Book`, `Transaction`, `UserLog`)
+- React Pages: grouped by domain (e.g., `Pages/Books/Index.tsx`, `Pages/Users/Students/Index.tsx`)
+- React Components: PascalCase (e.g., `BookTable.tsx`, `TransactionStatusBadge.tsx`)
+ 
+---
+ 
+## Domain Modules
+ 
+- **Books** — CRUD on bk_books, bk_categories; inventory scan in bk_inventories; barcode via Milon; bulk import
+- **Users** — usr_users with student/employee/visitor detail tables; staging queue via usr_staging_users; RFID management
+- **Transactions** — tr_transactions for borrow/return/reserve; tr_penalties for penalty line items
+- **Logs** — log_user_logs time-in/time-out; auto-timeout via stored procedure
+- **Penalties** — penalty_rules config; auto-calculation on return; payment recording
+- **Analytics** — Dashboard charts, real-time occupancy, top students, book stats
+- **Reports** — PDF (DOMPDF) and Excel (PhpSpreadsheet) generation from live + archive data
+- **Notifications** — notifications table + Laravel email notifications
+- **Archive** — Archive tables are read-only from the app; archiving is done by DB stored procedures
+- **Settings** — ui_settings (branding/theme), system_settings (key-value config)
+- **Backup** — Spatie Backup scheduled via Laravel Scheduler
+ 
+---
+ 
+## What NOT to Do
+ 
+- Do NOT use jQuery — this is a React project
+- Do NOT use Blade templates for UI pages — use React + Inertia Pages
+- Do NOT manually update bk_categories inventory counters from PHP — triggers handle this
+- Do NOT write audit trail entries from PHP — MySQL triggers handle this entirely
+- Do NOT manually mark transactions as Overdue in PHP — the MySQL event handles this
+- Do NOT write authorization logic in controllers — use Policies or Spatie can()
+- Do NOT use `$guarded = []` on any model
+- Do NOT use `any` TypeScript type
+- Do NOT skip Form Request classes for validation
+- Do NOT install or use chart.js, recharts, victory, nivo, or any other chart library —
+  react-apexcharts is the ONLY charting library in this project
+- Do NOT install pre-built component libraries (Flowbite, shadcn, MUI, Ant Design, etc.) —
+  all UI components are built with Tailwind CSS from scratch
+- Do NOT forget to declare `protected $table` on every model (tables are prefixed)
+- Do NOT call stored procedures with raw PDO — use `DB::statement('CALL ...')`
+- Do NOT write raw SQL queries with DB::select or DB::statement except when calling stored procedures or using MATCH AGAINST for full-text search
+- Do NOT write any new database migrations for logic that is already handled by stored procedures or triggers

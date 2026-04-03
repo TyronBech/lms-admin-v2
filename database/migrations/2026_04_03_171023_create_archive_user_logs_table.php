@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        DB::transaction(function (): void {
+            if (! Schema::hasTable('archive_user_logs')) {
+                Schema::create('archive_user_logs', function (Blueprint $table): void {
+                    $table->id();
+                    $table->string('first_name', 100);
+                    $table->string('middle_name', 100)->nullable();
+                    $table->string('last_name', 100);
+                    $table->string('computer_use');
+                    $table->string('action');
+                    $table->timestamp('timestamp');
+                    $table->timestamp('archived_at')->nullable()->useCurrent();
+                });
+            }
+        });
+    }
+
+    public function down(): void
+    {
+        DB::transaction(function (): void {
+            Schema::dropIfExists('archive_user_logs');
+        });
+    }
+};
