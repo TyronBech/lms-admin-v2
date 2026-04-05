@@ -343,7 +343,9 @@ penalty_rules, privileges, ui_settings
 - Secondary color should only be used for body background and footer, never for primary UI elements like buttons, badges, header.
 - Primary color should be used for all primary UI elements (buttons, badges, header).
 - Tertiary color should only be used for hover states, accents, and highlights, never as a main color for UI elements.
-- Always have a suggested search term or placeholder text in search inputs to guide users on what they can search for.
+- Always have debounce on search inputs to prevent excessive API calls.
+- Always display search suggestions in a dropdown below the search input as the user types.
+- Always use modals for create/edit forms instead of separate pages.
 - Always provide loading states for all asynchronous actions (form submissions, data fetching).
 - Always provide error handling and display user-friendly error messages for failed operations, use toast (success, warning, error).
 - Always ensure the app is responsive and works well on different screen sizes (mobile, tablet, desktop).
