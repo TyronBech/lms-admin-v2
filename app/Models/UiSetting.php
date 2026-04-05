@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Represents the UI and branding settings for the organization.
@@ -27,6 +28,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class UiSetting extends Model
 {
     use SoftDeletes;
+
+    /**
+     * Boot the model and register cache invalidation events.
+     */
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::saved(fn () => Cache::forget('ui_settings'));
+        static::deleted(fn () => Cache::forget('ui_settings'));
+    }
 
     /**
      * @var string

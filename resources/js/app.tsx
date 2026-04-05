@@ -71,7 +71,7 @@ createInertiaApp({
         }
     },
     strictMode: true,
-    withApp(app: React.ReactNode) {
+    withApp(app: React.ReactElement) {
         return <TooltipProvider delayDuration={0}>{app}</TooltipProvider>;
     },
     progress: {
