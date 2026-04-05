@@ -1,4 +1,11 @@
+const HEX_REGEX = /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
+const FALLBACK_HEX = '#808080';
+
 export function generatePalette(hex: string): Record<number, string> {
+    if (!HEX_REGEX.test(hex)) {
+        hex = FALLBACK_HEX;
+    }
+
     const parseHex = (h: string): [number, number, number] => {
         h = h.replace(/^#/, '');
 

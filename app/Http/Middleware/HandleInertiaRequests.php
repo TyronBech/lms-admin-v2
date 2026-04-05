@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\UiSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -41,7 +43,17 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'settings' => \App\Models\UiSetting::first(),
+            'settings' => Cache::remember('ui_settings', now()->addHour(), fn () => UiSetting::select([
+                'org_name',
+                'org_initial',
+                'org_address',
+                'org_logo',
+                'org_logo_full',
+                'email',
+                'contact_number',
+                'social_links',
+                'theme_colors',
+            ])->first()),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

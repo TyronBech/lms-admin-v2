@@ -114,7 +114,7 @@ export default function Welcome({ settings }: WelcomeProps) {
 
                         {/* Navbar Links */}
                         <div
-                            className={`${isMenuOpen ? 'max-h-100 pb-4 opacity-100' : 'max-h-0 opacity-0 lg:max-h-fit lg:opacity-100'} w-full overflow-hidden transition-all duration-300 ease-in-out lg:block lg:w-auto`}
+                            className={`${isMenuOpen ? 'max-h-96 pb-4 opacity-100' : 'max-h-0 opacity-0 lg:max-h-fit lg:opacity-100'} w-full overflow-hidden transition-all duration-300 ease-in-out lg:block lg:w-auto`}
                             id="navbar-dropdown"
                         >
                             <ul className="mt-4 flex flex-col gap-2 rounded-xl border border-white/20 bg-primary-600/50 p-4 font-medium shadow-lg backdrop-blur-md lg:mt-0 lg:flex-row lg:space-x-8 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none rtl:space-x-reverse">
@@ -239,7 +239,7 @@ export default function Welcome({ settings }: WelcomeProps) {
                         Our Services
                     </h2>
                     <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 sm:grid-cols-2 sm:px-6 md:grid-cols-3 lg:px-8">
-                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-103 hover:shadow-lg dark:bg-gray-800">
+                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg dark:bg-gray-800">
                             <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                                 Book Management
                             </h3>
@@ -249,7 +249,7 @@ export default function Welcome({ settings }: WelcomeProps) {
                                 adding, updating, and organizing books.
                             </p>
                         </div>
-                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-103 hover:shadow-lg dark:bg-gray-800">
+                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg dark:bg-gray-800">
                             <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                                 User Accounts
                             </h3>
@@ -259,7 +259,7 @@ export default function Welcome({ settings }: WelcomeProps) {
                                 access library resources seamlessly.
                             </p>
                         </div>
-                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-103 hover:shadow-lg dark:bg-gray-800">
+                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg dark:bg-gray-800">
                             <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                                 Reporting and Analytics
                             </h3>
@@ -269,7 +269,7 @@ export default function Welcome({ settings }: WelcomeProps) {
                                 tools.
                             </p>
                         </div>
-                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-103 hover:shadow-lg dark:bg-gray-800">
+                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg dark:bg-gray-800">
                             <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                                 Inventory Management
                             </h3>
@@ -278,7 +278,7 @@ export default function Welcome({ settings }: WelcomeProps) {
                                 and ensure availability of books for users.
                             </p>
                         </div>
-                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-103 hover:shadow-lg dark:bg-gray-800">
+                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg dark:bg-gray-800">
                             <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                                 Borrowing and Returning
                             </h3>
@@ -288,7 +288,7 @@ export default function Welcome({ settings }: WelcomeProps) {
                                 library staff.
                             </p>
                         </div>
-                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-103 hover:shadow-lg dark:bg-gray-800">
+                        <div className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg dark:bg-gray-800">
                             <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                                 Security and Authentication
                             </h3>

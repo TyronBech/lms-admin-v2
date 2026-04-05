@@ -5,11 +5,12 @@ import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { getPaletteVars } from '@/Utils/ColorHelper';
+import type { SharedProps } from '@/types/ui';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Library Management System for Admin';
 
 function ThemeColorProvider({ children }: { children: React.ReactNode }) {
-    const { settings } = usePage<any>().props;
+    const { settings } = usePage<SharedProps>().props;
 
     const primaryColor = settings?.theme_colors?.primary || '#20246c';
     const secondaryColor = settings?.theme_colors?.secondary || '#EBF5FF';
@@ -70,7 +71,7 @@ createInertiaApp({
         }
     },
     strictMode: true,
-    withApp(app: any) {
+    withApp(app: React.ReactNode) {
         return <TooltipProvider delayDuration={0}>{app}</TooltipProvider>;
     },
     progress: {
