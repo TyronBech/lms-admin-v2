@@ -20,6 +20,37 @@ interface FooterProps {
     disableAnchors?: boolean;
 }
 
+type LinkOrTextProps = {
+    href: string;
+    children: React.ReactNode;
+    className: string;
+    external?: boolean;
+    disableAnchors?: boolean;
+};
+
+function LinkOrText({
+    href,
+    children,
+    className,
+    external = false,
+    disableAnchors = false,
+}: LinkOrTextProps) {
+    if (disableAnchors) {
+        return <span className={className}>{children}</span>;
+    }
+
+    return (
+        <a
+            href={href}
+            target={external ? '_blank' : undefined}
+            rel={external ? 'noopener noreferrer' : undefined}
+            className={className}
+        >
+            {children}
+        </a>
+    );
+}
+
 export default function Footer({ disableAnchors = false }: FooterProps) {
     const { settings } = usePage<{ settings?: Settings }>().props;
 
@@ -32,33 +63,6 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
 
     // Fallback if the environment variable wasn't shared explicitly
     const elibraryUrl = import.meta.env.VITE_ELIBRARY_URL || '#';
-
-    const LinkOrText = ({
-        href,
-        children,
-        className,
-        external = false,
-    }: {
-        href: string;
-        children: React.ReactNode;
-        className: string;
-        external?: boolean;
-    }) => {
-        if (disableAnchors) {
-            return <span className={className}>{children}</span>;
-        }
-
-        return (
-            <a
-                href={href}
-                target={external ? '_blank' : undefined}
-                rel={external ? 'noopener noreferrer' : undefined}
-                className={className}
-            >
-                {children}
-            </a>
-        );
-    };
 
     return (
         <footer className="mt-10 border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
@@ -95,6 +99,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                             <ul className="font-medium text-gray-500 dark:text-gray-400">
                                 <li className="mb-4">
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href={socialLinks.website || '#'}
                                         external
                                         className="hover:underline"
@@ -104,6 +109,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                                 </li>
                                 <li>
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href={elibraryUrl}
                                         external
                                         className="hover:underline"
@@ -120,6 +126,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                             <ul className="font-medium text-gray-500 dark:text-gray-400">
                                 <li className="mb-4">
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href={socialLinks.facebook || '#'}
                                         external
                                         className="hover:underline"
@@ -129,6 +136,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                                 </li>
                                 <li className="mb-4">
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href={socialLinks.instagram || '#'}
                                         external
                                         className="hover:underline"
@@ -138,6 +146,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                                 </li>
                                 <li className="mb-4">
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href={socialLinks.twitter || '#'}
                                         external
                                         className="hover:underline"
@@ -147,6 +156,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                                 </li>
                                 <li>
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href={socialLinks.youtube || '#'}
                                         external
                                         className="hover:underline"
@@ -163,6 +173,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                             <ul className="font-medium text-gray-500 dark:text-gray-400">
                                 <li className="mb-4">
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href={
                                             contactNumber !== 'N/A'
                                                 ? `tel:${contactNumber}`
@@ -175,6 +186,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                                 </li>
                                 <li className="mb-4">
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href={
                                             email !== 'N/A'
                                                 ? `mailto:${email}`
@@ -187,6 +199,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                                 </li>
                                 <li>
                                     <LinkOrText
+                                        disableAnchors={disableAnchors}
                                         href="mailto:owlquery.tech@gmail.com"
                                         className="hover:underline"
                                     >
@@ -202,6 +215,7 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                     <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
                         &copy; {new Date().getFullYear()}{' '}
                         <LinkOrText
+                            disableAnchors={disableAnchors}
                             href="mailto:owlquery.tech@gmail.com"
                             className="hover:underline"
                         >
