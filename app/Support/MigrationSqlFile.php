@@ -21,14 +21,14 @@ final class MigrationSqlFile
      */
     public static function readSection(string $relativePath, string $sectionName): string
     {
-        $path = database_path('sql/' . ltrim($relativePath, '/'));
+        $path = database_path('sql/'.ltrim($relativePath, '/'));
 
         if (! File::exists($path)) {
             throw new RuntimeException("SQL file does not exist: {$path}");
         }
 
         $content = File::get($path);
-        $pattern = '/--\s*\[' . preg_quote($sectionName, '/') . '\]\R(.*?)\R--\s*\[end\]/s';
+        $pattern = '/--\s*\['.preg_quote($sectionName, '/').'\]\R(.*?)\R--\s*\[end\]/s';
 
         if (! preg_match($pattern, $content, $matches)) {
             throw new RuntimeException("SQL section [{$sectionName}] was not found in {$path}");

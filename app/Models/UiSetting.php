@@ -9,9 +9,13 @@ use Illuminate\Support\Facades\Log;
 class UiSetting extends Model
 {
     use SoftDeletes;
+
     protected $table = 'ui_settings';
+
     protected $primaryKey = 'id';
+
     public $timestamps = true;
+
     protected $fillable = [
         'org_name',
         'org_initial',
@@ -41,11 +45,13 @@ class UiSetting extends Model
      */
     public function getOrgLogoBase64Attribute()
     {
-        if (!$this->org_logo) {
+        if (! $this->org_logo) {
             Log::warning('org_logo is null');
+
             return null;
         }
-        return 'data:image/png;base64,' . $this->org_logo;
+
+        return 'data:image/png;base64,'.$this->org_logo;
     }
 
     /**
@@ -53,10 +59,12 @@ class UiSetting extends Model
      */
     public function getOrgLogoFullBase64Attribute()
     {
-        if (!$this->org_logo_full) {
+        if (! $this->org_logo_full) {
             Log::warning('org_logo_full is null');
+
             return null;
         }
-        return 'data:image/png;base64,' . $this->org_logo_full;
+
+        return 'data:image/png;base64,'.$this->org_logo_full;
     }
 }

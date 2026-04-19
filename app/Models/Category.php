@@ -12,32 +12,32 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Category extends Model
 {
-  use HasFactory;
-  use SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
-  /**
-   * @var string
-   */
-  protected $table = 'bk_categories';
+    /**
+     * @var string
+     */
+    protected $table = 'bk_categories';
 
-  /**
-   * @var array<int, string>
-   */
-  protected $fillable = [
-    'legend',
-    'name',
-    'previous_inventory',
-    'newly_acquired',
-    'discarded',
-    'present_inventory',
-    'borrow_duration_days',
-  ];
+    /**
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'legend',
+        'name',
+        'previous_inventory',
+        'newly_acquired',
+        'discarded',
+        'present_inventory',
+        'borrow_duration_days',
+    ];
 
-  /**
-   * Get books under this category.
-   */
-  public function books(): HasMany
-  {
-    return $this->hasMany(Book::class, 'category_id');
-  }
+    /**
+     * Get books under this category.
+     */
+    public function books(): HasMany
+    {
+        return $this->hasMany(Book::class, 'category_id');
+    }
 }

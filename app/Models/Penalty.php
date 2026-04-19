@@ -12,44 +12,44 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Penalty extends Model
 {
-  use HasFactory;
-  use SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
-  /**
-   * @var string
-   */
-  protected $table = 'tr_penalties';
+    /**
+     * @var string
+     */
+    protected $table = 'tr_penalties';
 
-  /**
-   * @var array<int, string>
-   */
-  protected $fillable = [
-    'transaction_id',
-    'penalty_rule_id',
-    'amount',
-  ];
+    /**
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'transaction_id',
+        'penalty_rule_id',
+        'amount',
+    ];
 
-  /**
-   * @var array<int, string>
-   */
-  protected $with = [
-    'transaction',
-    'penaltyRule',
-  ];
+    /**
+     * @var array<int, string>
+     */
+    protected $with = [
+        'transaction',
+        'penaltyRule',
+    ];
 
-  /**
-   * Get the parent transaction.
-   */
-  public function transaction(): BelongsTo
-  {
-    return $this->belongsTo(Transaction::class, 'transaction_id');
-  }
+    /**
+     * Get the parent transaction.
+     */
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id');
+    }
 
-  /**
-   * Get the rule used for this penalty.
-   */
-  public function penaltyRule(): BelongsTo
-  {
-    return $this->belongsTo(PenaltyRule::class, 'penalty_rule_id');
-  }
+    /**
+     * Get the rule used for this penalty.
+     */
+    public function penaltyRule(): BelongsTo
+    {
+        return $this->belongsTo(PenaltyRule::class, 'penalty_rule_id');
+    }
 }

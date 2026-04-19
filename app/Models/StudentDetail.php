@@ -12,29 +12,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class StudentDetail extends Model
 {
-  use HasFactory;
-  use SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
-  /**
-   * @var string
-   */
-  protected $table = 'usr_student_details';
+    /**
+     * @var string
+     */
+    protected $table = 'usr_student_details';
 
-  /**
-   * @var array<int, string>
-   */
-  protected $fillable = [
-    'user_id',
-    'id_number',
-    'level',
-    'section',
-  ];
+    /**
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'user_id',
+        'id_number',
+        'level',
+        'section',
+    ];
 
-  /**
-   * Get the owning user.
-   */
-  public function user(): BelongsTo
-  {
-    return $this->belongsTo(LibraryUser::class, 'user_id');
-  }
+    /**
+     * Get the owning user.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(LibraryUser::class, 'user_id');
+    }
 }

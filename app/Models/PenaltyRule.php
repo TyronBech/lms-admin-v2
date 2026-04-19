@@ -12,29 +12,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class PenaltyRule extends Model
 {
-  use HasFactory;
-  use SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
-  /**
-   * @var string
-   */
-  protected $table = 'penalty_rules';
+    /**
+     * @var string
+     */
+    protected $table = 'penalty_rules';
 
-  /**
-   * @var array<int, string>
-   */
-  protected $fillable = [
-    'type',
-    'description',
-    'rate',
-    'per_day',
-  ];
+    /**
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'type',
+        'description',
+        'rate',
+        'per_day',
+    ];
 
-  /**
-   * Get penalties generated from this rule.
-   */
-  public function penalties(): HasMany
-  {
-    return $this->hasMany(Penalty::class, 'penalty_rule_id');
-  }
+    /**
+     * Get penalties generated from this rule.
+     */
+    public function penalties(): HasMany
+    {
+        return $this->hasMany(Penalty::class, 'penalty_rule_id');
+    }
 }

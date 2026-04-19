@@ -9,19 +9,19 @@ use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 
 class LogoutResponse implements LogoutResponseContract
 {
-  /**
-   * Create a logout response.
-   */
-  public function toResponse($request): RedirectResponse|JsonResponse
-  {
-    Log::info('[Auth][Logout] Logout completed successfully', [
-      'user_id' => null,
-      'ip' => $request->ip(),
-      'timestamp' => now()->toDateTimeString(),
-    ]);
+    /**
+     * Create a logout response.
+     */
+    public function toResponse($request): RedirectResponse|JsonResponse
+    {
+        Log::info('[Auth][Logout] Logout completed successfully', [
+            'user_id' => null,
+            'ip' => $request->ip(),
+            'timestamp' => now()->toDateTimeString(),
+        ]);
 
-    return $request->wantsJson()
-      ? response()->noContent()
-      : redirect()->route('home');
-  }
+        return $request->wantsJson()
+          ? response()->noContent()
+          : redirect()->route('home');
+    }
 }

@@ -2,30 +2,29 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  public function up(): void
+    public function up(): void
     {
-if (! Schema::hasTable('archive_inventories')) {
-        Schema::create('archive_inventories', function (Blueprint $table): void {
-          $table->id();
-          $table->unsignedBigInteger('book_id');
-          $table->string('accession', 50);
-          $table->string('call_number', 50)->nullable();
-          $table->string('title');
-          $table->text('author')->nullable();
-          $table->string('remarks', 50)->nullable();
-          $table->timestamp('checked_at')->nullable();
-          $table->timestamp('archived_at')->nullable()->useCurrent();
-        });
-      }
-  }
+        if (! Schema::hasTable('archive_inventories')) {
+            Schema::create('archive_inventories', function (Blueprint $table): void {
+                $table->id();
+                $table->unsignedBigInteger('book_id');
+                $table->string('accession', 50);
+                $table->string('call_number', 50)->nullable();
+                $table->string('title');
+                $table->text('author')->nullable();
+                $table->string('remarks', 50)->nullable();
+                $table->timestamp('checked_at')->nullable();
+                $table->timestamp('archived_at')->nullable()->useCurrent();
+            });
+        }
+    }
 
-  public function down(): void
+    public function down(): void
     {
-Schema::dropIfExists('archive_inventories');
-  }
+        Schema::dropIfExists('archive_inventories');
+    }
 };
