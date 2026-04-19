@@ -335,6 +335,9 @@ penalty_rules, privileges, ui_settings
 - Use Tailwind CSS for all styling. Build all UI components (tables, modals, cards,
   badges, sidebars, dropdowns) from scratch using Tailwind utility classes.
   Do NOT install pre-built component libraries — AI will generate the components.
+- Always use the same card component for all cards, the same table component for all tables, etc., to maintain a consistent design system.
+- All pages must be dark mode compatible. Use Tailwind's dark mode features to ensure the app looks good in both light and dark themes.
+- Always use the same header and footer components across all pages.
 - Use `clsx` for conditional class names.
 - Use `dayjs` for all date formatting (due dates, time-in/out, transaction dates).
 - Use `react-apexcharts` as the ONLY charting library. Do not use chart.js, recharts,

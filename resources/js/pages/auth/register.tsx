@@ -2,7 +2,7 @@ import { Form, Head } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
+import { PrimaryButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
@@ -84,7 +84,7 @@ export default function Register() {
                                 />
                             </div>
 
-                            <Button
+                            <PrimaryButton
                                 type="submit"
                                 className="mt-2 w-full"
                                 tabIndex={5}
@@ -92,7 +92,7 @@ export default function Register() {
                             >
                                 {processing && <Spinner />}
                                 Create account
-                            </Button>
+                            </PrimaryButton>
                         </div>
 
                         <div className="text-center text-sm text-muted-foreground">

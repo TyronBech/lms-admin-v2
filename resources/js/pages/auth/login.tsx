@@ -2,26 +2,21 @@ import { Form, Head } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
+import { PrimaryButton } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { register } from '@/routes';
+import { home } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 
 type Props = {
     status?: string;
     canResetPassword: boolean;
-    canRegister: boolean;
 };
 
-export default function Login({
-    status,
-    canResetPassword,
-    canRegister,
-}: Props) {
+export default function Login({ status, canResetPassword }: Props) {
     return (
         <>
             <Head title="Log in" />
@@ -82,7 +77,7 @@ export default function Login({
                                 <Label htmlFor="remember">Remember me</Label>
                             </div>
 
-                            <Button
+                            <PrimaryButton
                                 type="submit"
                                 className="mt-4 w-full"
                                 tabIndex={4}
@@ -91,23 +86,25 @@ export default function Login({
                             >
                                 {processing && <Spinner />}
                                 Log in
-                            </Button>
-                        </div>
+                            </PrimaryButton>
 
-                        {canRegister && (
-                            <div className="text-center text-sm text-muted-foreground">
-                                Don't have an account?{' '}
-                                <TextLink href={register()} tabIndex={5}>
-                                    Sign up
+                            <div className="text-center">
+                                <TextLink
+                                    href={home()}
+                                    className="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white"
+                                    tabIndex={6}
+                                >
+                                    <span aria-hidden="true">&larr;</span>
+                                    <span>Back to landing page</span>
                                 </TextLink>
                             </div>
-                        )}
+                        </div>
                     </>
                 )}
             </Form>
 
             {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                <div className="mb-4 text-center text-sm font-medium text-green-600 dark:text-green-400">
                     {status}
                 </div>
             )}

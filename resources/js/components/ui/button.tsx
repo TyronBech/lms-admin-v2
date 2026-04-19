@@ -9,8 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        primary:
+          "bg-primary-500 text-white shadow-sm shadow-primary-900/20 hover:bg-primary-600 focus-visible:ring-primary-200",
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-primary-500 text-white shadow-sm shadow-primary-900/20 hover:bg-primary-600 focus-visible:ring-primary-200",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
         outline:
@@ -55,4 +57,24 @@ function Button({
   )
 }
 
-export { Button, buttonVariants }
+function PrimaryButton({
+  className,
+  size,
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> & {
+  asChild?: boolean
+  size?: VariantProps<typeof buttonVariants>["size"]
+}) {
+  return (
+    <Button
+      variant="primary"
+      size={size}
+      asChild={asChild}
+      className={className}
+      {...props}
+    />
+  )
+}
+
+export { Button, PrimaryButton, buttonVariants }
