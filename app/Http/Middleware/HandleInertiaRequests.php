@@ -43,17 +43,14 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'settings' => Cache::remember('ui_settings', now()->addHour(), fn () => UiSetting::select([
-                'org_name',
-                'org_initial',
-                'org_address',
-                'org_logo',
-                'org_logo_full',
-                'email',
-                'contact_number',
-                'social_links',
-                'theme_colors',
-            ])->first()),
+            'settings' => Cache::remember('ui_settings.shared.v2', now()->addMinutes(10), static function (): ?array {
+                $settings = UiSetting::query()->first();
+
+                return $settings?->makeHidden([
+                    'org_logo',
+                    'org_logo_full',
+                ])->toArray();
+            }),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

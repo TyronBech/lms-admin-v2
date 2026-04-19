@@ -4,8 +4,8 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import type { SharedProps } from '@/types';
 import { getPaletteVars } from '@/Utils/ColorHelper';
-import type { SharedProps } from '@/types/ui';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Library Management System for Admin';
 
@@ -60,7 +60,7 @@ createInertiaApp({
     },
     layout: (name: string) => {
         switch (true) {
-            case name === 'Welcome' || name === 'welcome':
+            case name === 'welcome':
                 return RootLayout;
             case name.startsWith('auth/'):
                 return [RootLayout, AuthLayout];
@@ -71,7 +71,7 @@ createInertiaApp({
         }
     },
     strictMode: true,
-    withApp(app: React.ReactElement) {
+    withApp(app: React.ReactNode) {
         return <TooltipProvider delayDuration={0}>{app}</TooltipProvider>;
     },
     progress: {

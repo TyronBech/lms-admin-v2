@@ -12,28 +12,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class VisitorDetail extends Model
 {
-  use HasFactory;
-  use SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
-  /**
-   * @var string
-   */
-  protected $table = 'usr_visitor_details';
+    /**
+     * @var string
+     */
+    protected $table = 'usr_visitor_details';
 
-  /**
-   * @var array<int, string>
-   */
-  protected $fillable = [
-    'user_id',
-    'school_org',
-    'purpose',
-  ];
+    /**
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'user_id',
+        'school_org',
+        'purpose',
+    ];
 
-  /**
-   * Get the owning user.
-   */
-  public function user(): BelongsTo
-  {
-    return $this->belongsTo(LibraryUser::class, 'user_id');
-  }
+    /**
+     * Get the owning user.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(LibraryUser::class, 'user_id');
+    }
 }

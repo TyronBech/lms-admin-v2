@@ -9,32 +9,32 @@ return new class extends Migration
 {
     public function up(): void
     {
-if (! Schema::hasTable('ui_settings')) {
-                Schema::create('ui_settings', function (Blueprint $table): void {
-                    $table->id();
-                    $table->string('org_name', 100);
-                    $table->string('org_initial', 45)->nullable();
-                    $table->text('org_address');
-                    $table->binary('org_logo');
-                    $table->binary('org_logo_full');
-                    $table->string('email', 100);
-                    $table->string('contact_number', 45);
-                    $table->json('social_links')->nullable();
-                    $table->json('theme_colors')->nullable();
-                    $table->timestamp('created_at')->nullable()->useCurrent();
-                    $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
-                    $table->timestamp('deleted_at')->nullable();
-                });
-            }
+        if (! Schema::hasTable('ui_settings')) {
+            Schema::create('ui_settings', function (Blueprint $table): void {
+                $table->id();
+                $table->string('org_name', 100);
+                $table->string('org_initial', 45)->nullable();
+                $table->text('org_address');
+                $table->binary('org_logo');
+                $table->binary('org_logo_full');
+                $table->string('email', 100);
+                $table->string('contact_number', 45);
+                $table->json('social_links')->nullable();
+                $table->json('theme_colors')->nullable();
+                $table->timestamp('created_at')->nullable()->useCurrent();
+                $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
+                $table->timestamp('deleted_at')->nullable();
+            });
+        }
 
-            if (DB::getDriverName() === 'mysql' && Schema::hasTable('ui_settings')) {
-                DB::statement('ALTER TABLE ui_settings MODIFY org_logo LONGBLOB NOT NULL');
-                DB::statement('ALTER TABLE ui_settings MODIFY org_logo_full LONGBLOB NOT NULL');
-            }
+        if (DB::getDriverName() === 'mysql' && Schema::hasTable('ui_settings')) {
+            DB::statement('ALTER TABLE ui_settings MODIFY org_logo LONGBLOB NOT NULL');
+            DB::statement('ALTER TABLE ui_settings MODIFY org_logo_full LONGBLOB NOT NULL');
+        }
     }
 
     public function down(): void
     {
-Schema::dropIfExists('ui_settings');
+        Schema::dropIfExists('ui_settings');
     }
 };

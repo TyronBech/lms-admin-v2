@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class TwoFactorChallengeTest extends TestCase
@@ -35,6 +36,13 @@ class TwoFactorChallengeTest extends TestCase
 
         $user = User::factory()->create();
 
+        $role = Role::firstOrCreate([
+            'name' => 'Admin',
+            'guard_name' => 'web',
+        ]);
+
+        $user->assignRole($role);
+
         $user->forceFill([
             'two_factor_secret' => encrypt('test-secret'),
             'two_factor_recovery_codes' => encrypt(json_encode(['code1', 'code2'])),
@@ -48,8 +56,9 @@ class TwoFactorChallengeTest extends TestCase
 
         $this->get(route('two-factor.login'))
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->component('auth/two-factor-challenge'),
+            ->assertInertia(
+                fn (Assert $page) => $page
+                    ->component('auth/two-factor-challenge'),
             );
     }
 }

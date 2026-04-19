@@ -12,28 +12,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Inventory extends Model
 {
-  use HasFactory;
-  use SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
-  /**
-   * @var string
-   */
-  protected $table = 'bk_inventories';
+    /**
+     * @var string
+     */
+    protected $table = 'bk_inventories';
 
-  /**
-   * @var array<int, string>
-   */
-  protected $fillable = [
-    'book_id',
-    'is_scanned',
-    'checked_at',
-  ];
+    /**
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'book_id',
+        'is_scanned',
+        'checked_at',
+    ];
 
-  /**
-   * Get the book this inventory entry belongs to.
-   */
-  public function book(): BelongsTo
-  {
-    return $this->belongsTo(Book::class, 'book_id');
-  }
+    /**
+     * Get the book this inventory entry belongs to.
+     */
+    public function book(): BelongsTo
+    {
+        return $this->belongsTo(Book::class, 'book_id');
+    }
 }

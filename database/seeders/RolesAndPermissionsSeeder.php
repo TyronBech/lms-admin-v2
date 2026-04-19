@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -77,7 +77,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             if ($superAdmin) {
                 $superAdmin->syncPermissions(
-                    Permission::where('guard_name', 'web')->pluck('name')->all()
+                    Permission::where('guard_name', 'web')->pluck('name')->all(),
                 );
             }
 

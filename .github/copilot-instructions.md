@@ -262,6 +262,8 @@ public function update(UpdateBookRequest $request, Book $book): RedirectResponse
  
 - Always use Laravel 13 syntax and conventions. Do not suggest deprecated patterns.
 - Controllers must be single-action or resource controllers. No fat controllers.
+- When getting data from .env or config, always use the `config()` helper, never `env()` directly in app code, so that the application can properly manage and cache configuration values.
+- When in doubt, put the logic in a Service class under `app/Services/` and call it from the controller.
 - All business logic must go into Service classes under `app/Services/`.
 - Use Form Request classes for all validation — NEVER validate in controllers.
 - Use Eloquent — NEVER write raw SQL unless calling a stored procedure or
@@ -333,6 +335,9 @@ penalty_rules, privileges, ui_settings
 - Use Tailwind CSS for all styling. Build all UI components (tables, modals, cards,
   badges, sidebars, dropdowns) from scratch using Tailwind utility classes.
   Do NOT install pre-built component libraries — AI will generate the components.
+- Always use the same card component for all cards, the same table component for all tables, etc., to maintain a consistent design system.
+- All pages must be dark mode compatible. Use Tailwind's dark mode features to ensure the app looks good in both light and dark themes.
+- Always use the same header and footer components across all pages.
 - Use `clsx` for conditional class names.
 - Use `dayjs` for all date formatting (due dates, time-in/out, transaction dates).
 - Use `react-apexcharts` as the ONLY charting library. Do not use chart.js, recharts,

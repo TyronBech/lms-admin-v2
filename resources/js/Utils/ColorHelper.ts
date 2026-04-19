@@ -1,11 +1,4 @@
-const HEX_REGEX = /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
-const FALLBACK_HEX = '#808080';
-
 export function generatePalette(hex: string): Record<number, string> {
-    if (!HEX_REGEX.test(hex)) {
-        hex = FALLBACK_HEX;
-    }
-
     const parseHex = (h: string): [number, number, number] => {
         h = h.replace(/^#/, '');
 
@@ -134,8 +127,11 @@ export function generatePalette(hex: string): Record<number, string> {
     return palette;
 }
 
+const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
 export function getPaletteVars(name: string, hex: string): string {
-    const palette = generatePalette(hex);
+    const safeHex = HEX_COLOR_REGEX.test(hex) ? hex : '#000000';
+    const palette = generatePalette(safeHex);
 
     return Object.entries(palette)
         .map(([shade, rgb]) => `--${name}-${shade}: ${rgb};`)
