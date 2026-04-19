@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import Footer from '@/components/Footer';
 import PublicHeader from '@/components/public-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,8 +18,16 @@ interface WelcomeProps {
     settings?: Settings;
 }
 
+interface SharedPageProps {
+    [key: string]: unknown;
+    name?: string;
+}
+
 export default function Welcome({ settings }: WelcomeProps) {
+    const { name } = usePage<SharedPageProps>().props;
     const orgName = settings?.org_name || 'School Name';
+    const appName =
+        name + ' - Library Management System' || 'Library Management System';
     const logoSrc = settings?.org_logo_base64 || '/img/default-logo.png'; // fallback to a default image
     const services = [
         {
@@ -78,7 +86,7 @@ export default function Welcome({ settings }: WelcomeProps) {
                             </h1>
                             <hr className="my-2 h-px w-full max-w-xs border-0 bg-gray-500 dark:bg-white" />
                             <h2 className="text-lg font-semibold text-black sm:text-xl md:text-xl lg:text-2xl dark:text-white">
-                                Library Management System
+                                {appName}
                             </h2>
                             <h4 className="my-4 text-base font-semibold text-black sm:text-lg md:text-base lg:text-lg dark:text-white">
                                 Developed by

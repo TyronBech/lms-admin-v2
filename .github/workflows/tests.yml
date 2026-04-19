@@ -49,6 +49,9 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
+      - name: Check Wayfinder Route Imports
+        run: npm run check:wayfinder-routes
+
       - name: Build Assets
         run: npm run build
 

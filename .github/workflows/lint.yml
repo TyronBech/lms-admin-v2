@@ -39,6 +39,9 @@ jobs:
       - name: Format Frontend
         run: npm run format
 
+      - name: Check Wayfinder Route Imports
+        run: npm run check:wayfinder-routes
+
       - name: Lint Frontend
         run: npm run lint
 
