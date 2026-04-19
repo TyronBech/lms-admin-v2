@@ -43,7 +43,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'settings' => Cache::remember('ui_settings.shared', now()->addMinutes(10), static function (): ?array {
+            'settings' => Cache::remember('ui_settings.shared.v2', now()->addMinutes(10), static function (): ?array {
                 $settings = UiSetting::query()->first();
 
                 return $settings?->makeHidden([

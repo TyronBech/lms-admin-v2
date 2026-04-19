@@ -44,11 +44,7 @@ class UiSetting extends Model
      */
     public function getOrgLogoBase64Attribute(): ?string
     {
-        if (! $this->org_logo) {
-            return null;
-        }
-
-        return 'data:image/png;base64,'.base64_encode($this->org_logo);
+        return $this->toImageDataUrl($this->org_logo);
     }
 
     /**
@@ -56,10 +52,45 @@ class UiSetting extends Model
      */
     public function getOrgLogoFullBase64Attribute(): ?string
     {
-        if (! $this->org_logo_full) {
+        return $this->toImageDataUrl($this->org_logo_full);
+    }
+
+    /**
+     * Normalize image storage formats into a PNG data URL.
+     */
+    private function toImageDataUrl(?string $value): ?string
+    {
+        if (! $value) {
             return null;
         }
 
-        return 'data:image/png;base64,'.base64_encode($this->org_logo_full);
+        if (str_starts_with($value, 'data:image/')) {
+            return $value;
+        }
+
+        // Some records are stored as raw binary, others as base64 text.
+        $normalized = $this->looksLikeBase64($value)
+            ? base64_decode($value, true)
+            : false;
+
+        $binary = $normalized !== false ? $normalized : $value;
+
+        return 'data:image/png;base64,' . base64_encode($binary);
+    }
+
+    /**
+     * Determine if the incoming string is likely a base64 payload.
+     */
+    private function looksLikeBase64(string $value): bool
+    {
+        if ($value === '') {
+            return false;
+        }
+
+        if (strlen($value) % 4 !== 0) {
+            return false;
+        }
+
+        return preg_match('/^[A-Za-z0-9+\/=\r\n]+$/', $value) === 1;
     }
 }
