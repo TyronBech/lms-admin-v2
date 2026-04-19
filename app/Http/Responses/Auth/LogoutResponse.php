@@ -14,8 +14,10 @@ class LogoutResponse implements LogoutResponseContract
      */
     public function toResponse($request): RedirectResponse|JsonResponse
     {
+        $userId = $request->user()?->id ?? $request->session()->get('auth_user_id');
+
         Log::info('[Auth][Logout] Logout completed successfully', [
-            'user_id' => null,
+            'user_id' => $userId,
             'ip' => $request->ip(),
             'timestamp' => now()->toDateTimeString(),
         ]);

@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import type { MouseEvent } from 'react';
 import { home, login } from '@/routes';
 
 type PublicHeaderProps = {
@@ -29,7 +30,7 @@ export default function PublicHeader({
     const logoSrc = settings?.org_logo_base64 || '/img/default-logo.png';
 
     const handleScroll = (
-        e: React.MouseEvent<HTMLAnchorElement>,
+        e: MouseEvent<HTMLAnchorElement>,
         targetId: string,
     ) => {
         e.preventDefault();

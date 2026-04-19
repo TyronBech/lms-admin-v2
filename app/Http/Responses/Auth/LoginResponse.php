@@ -32,18 +32,20 @@ class LoginResponse implements LoginResponseContract
         $request->session()->save();
 
         if (config('session.driver') === 'database') {
-            DB::beginTransaction();
+            $sessionConnection = DB::connection(config('session.connection') ?: config('database.default'));
+
+            $sessionConnection->beginTransaction();
 
             try {
-                DB::statement('SET @current_user_id = ?', [$userId]);
+                $sessionConnection->statement('SET @current_user_id = ?', [$userId]);
 
-                DB::table(config('session.table', 'sessions'))
+                $sessionConnection->table(config('session.table', 'sessions'))
                     ->where('id', $request->session()->getId())
                     ->update(['login_source' => 'Admin']);
 
-                DB::commit();
+                $sessionConnection->commit();
             } catch (\Throwable $e) {
-                DB::rollBack();
+                $sessionConnection->rollBack();
 
                 Log::error('[Auth][Login] Failed to persist login source', [
                     'user_id' => $userId,

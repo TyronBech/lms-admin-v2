@@ -4,12 +4,13 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import type { SharedProps } from '@/types';
 import { getPaletteVars } from '@/Utils/ColorHelper';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Library Management System for Admin';
 
 function ThemeColorProvider({ children }: { children: React.ReactNode }) {
-    const { settings } = usePage<any>().props;
+    const { settings } = usePage<SharedProps>().props;
 
     const primaryColor = settings?.theme_colors?.primary || '#20246c';
     const secondaryColor = settings?.theme_colors?.secondary || '#EBF5FF';

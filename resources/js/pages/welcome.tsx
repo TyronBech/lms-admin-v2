@@ -153,7 +153,7 @@ export default function Welcome() {
                         {services.map((service) => (
                             <Card
                                 key={service.title}
-                                className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-103 hover:shadow-lg dark:bg-gray-800"
+                                className="rounded-lg bg-white p-6 shadow transition duration-300 ease-in-out hover:scale-[1.03] hover:shadow-lg dark:bg-gray-800"
                             >
                                 <CardHeader className="mb-4 p-0">
                                     <CardTitle className="text-xl text-gray-900 dark:text-white">
