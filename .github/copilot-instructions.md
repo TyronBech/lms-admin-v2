@@ -262,6 +262,8 @@ public function update(UpdateBookRequest $request, Book $book): RedirectResponse
  
 - Always use Laravel 13 syntax and conventions. Do not suggest deprecated patterns.
 - Controllers must be single-action or resource controllers. No fat controllers.
+- When getting data from .env or config, always use the `config()` helper, never `env()` directly in app code, so that the application can properly manage and cache configuration values.
+- When in doubt, put the logic in a Service class under `app/Services/` and call it from the controller.
 - All business logic must go into Service classes under `app/Services/`.
 - Use Form Request classes for all validation — NEVER validate in controllers.
 - Use Eloquent — NEVER write raw SQL unless calling a stored procedure or
