@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\UiSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
