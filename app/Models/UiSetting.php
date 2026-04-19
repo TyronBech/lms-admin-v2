@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Log;
 
 class UiSetting extends Model
 {
@@ -43,28 +42,24 @@ class UiSetting extends Model
     /**
      * Get the org_logo as a base64 data URL for display
      */
-    public function getOrgLogoBase64Attribute()
+    public function getOrgLogoBase64Attribute(): ?string
     {
         if (! $this->org_logo) {
-            Log::warning('org_logo is null');
-
             return null;
         }
 
-        return 'data:image/png;base64,'.$this->org_logo;
+        return 'data:image/png;base64,'.base64_encode($this->org_logo);
     }
 
     /**
      * Get the org_logo_full as a base64 data URL for display
      */
-    public function getOrgLogoFullBase64Attribute()
+    public function getOrgLogoFullBase64Attribute(): ?string
     {
         if (! $this->org_logo_full) {
-            Log::warning('org_logo_full is null');
-
             return null;
         }
 
-        return 'data:image/png;base64,'.$this->org_logo_full;
+        return 'data:image/png;base64,'.base64_encode($this->org_logo_full);
     }
 }

@@ -3,7 +3,6 @@ import Footer from '@/components/Footer';
 import PublicHeader from '@/components/public-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-// Assuming we pass settings from backend, otherwise we could provide fallback
 interface Settings {
     org_name?: string;
     org_logo_base64?: string;
@@ -14,20 +13,18 @@ interface Settings {
     };
 }
 
-interface WelcomeProps {
-    settings?: Settings;
-}
-
 interface SharedPageProps {
     [key: string]: unknown;
     name?: string;
+    settings?: Settings;
 }
 
-export default function Welcome({ settings }: WelcomeProps) {
-    const { name } = usePage<SharedPageProps>().props;
+export default function Welcome() {
+    const { name, settings } = usePage<SharedPageProps>().props;
     const orgName = settings?.org_name || 'School Name';
-    const appName =
-        name + ' - Library Management System' || 'Library Management System';
+    const appName = name
+        ? `${name} - Library Management System`
+        : 'Library Management System';
     const logoSrc = settings?.org_logo_base64 || '/img/default-logo.png'; // fallback to a default image
     const services = [
         {

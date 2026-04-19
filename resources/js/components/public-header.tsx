@@ -134,7 +134,7 @@ export default function PublicHeader({
                             </button>
 
                             <div
-                                className={`${isMenuOpen ? 'max-h-100 pb-4 opacity-100' : 'max-h-0 opacity-0 lg:max-h-fit lg:opacity-100'} w-full overflow-hidden transition-all duration-300 ease-in-out lg:block lg:w-auto`}
+                                className={`${isMenuOpen ? 'max-h-[400px] pb-4 opacity-100' : 'max-h-0 opacity-0 lg:max-h-fit lg:opacity-100'} w-full overflow-hidden transition-all duration-300 ease-in-out lg:block lg:w-auto`}
                                 id="navbar-dropdown"
                             >
                                 <ul className="mt-4 flex flex-col gap-2 rounded-xl border border-white/20 bg-primary-600/50 p-4 font-medium shadow-lg backdrop-blur-md lg:mt-0 lg:flex-row lg:space-x-8 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none rtl:space-x-reverse">

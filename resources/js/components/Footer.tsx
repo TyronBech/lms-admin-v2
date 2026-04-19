@@ -74,10 +74,10 @@ export default function Footer({ disableAnchors = false }: FooterProps) {
                                 />
                             )}
                             <div className="min-w-0">
-                                <span className="text-sm font-semibold wrap-break-word md:text-lg dark:text-white">
+                                <span className="text-sm font-semibold break-words md:text-lg dark:text-white">
                                     {orgName}
                                 </span>
-                                <p className="mt-1 text-xs wrap-break-word text-gray-500 dark:text-gray-400">
+                                <p className="mt-1 text-xs break-words text-gray-500 dark:text-gray-400">
                                     {orgAddress}
                                 </p>
                             </div>

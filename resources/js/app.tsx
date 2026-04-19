@@ -59,7 +59,7 @@ createInertiaApp({
     },
     layout: (name: string) => {
         switch (true) {
-            case name === 'Welcome' || name === 'welcome':
+            case name === 'welcome':
                 return RootLayout;
             case name.startsWith('auth/'):
                 return [RootLayout, AuthLayout];
@@ -70,7 +70,7 @@ createInertiaApp({
         }
     },
     strictMode: true,
-    withApp(app: any) {
+    withApp(app: React.ReactNode) {
         return <TooltipProvider delayDuration={0}>{app}</TooltipProvider>;
     },
     progress: {

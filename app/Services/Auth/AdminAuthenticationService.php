@@ -2,6 +2,7 @@
 
 namespace App\Services\Auth;
 
+use App\Enum\RoleEnum;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -50,8 +51,8 @@ class AdminAuthenticationService
             return null;
         }
 
-        if (! method_exists($user, 'getRoleNames') || $user->getRoleNames()->isEmpty()) {
-            Log::warning('[Auth][Login] Authentication failed: missing role assignment', [
+        if (! $this->hasAllowedRole($user)) {
+            Log::warning('[Auth][Login] Authentication failed: user does not have an allowed admin portal role', [
                 'user_id' => $user->getAuthIdentifier(),
                 'email_hash' => $this->emailHash($email),
                 'ip' => $request->ip(),
@@ -68,6 +69,21 @@ class AdminAuthenticationService
         ]);
 
         return $user;
+    }
+
+    /**
+     * Check whether the user holds at least one role allowed in the Admin portal.
+     */
+    private function hasAllowedRole(Authenticatable $user): bool
+    {
+        if (! method_exists($user, 'getRoleNames')) {
+            return false;
+        }
+
+        $allowedRoles = RoleEnum::adminPortalRoles();
+        $userRoles = $user->getRoleNames()->toArray();
+
+        return count(array_intersect($userRoles, $allowedRoles)) > 0;
     }
 
     /**
