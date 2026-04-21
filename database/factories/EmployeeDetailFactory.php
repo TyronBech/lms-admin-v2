@@ -22,7 +22,7 @@ class EmployeeDetailFactory extends Factory
   public function definition(): array
   {
     return [
-      'user_id' => LibraryUser::factory()->employee(),
+      'user_id' => LibraryUser::factory()->employee()->withoutAutoDetails(),
       'employee_id' => sprintf('EMP%06d', fake()->unique()->numberBetween(1, 999999)),
       'employee_role' => fake()->randomElement(['Teacher', 'Librarian', 'Coordinator', 'Office Staff']),
     ];

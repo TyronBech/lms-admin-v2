@@ -22,7 +22,7 @@ class VisitorDetailFactory extends Factory
   public function definition(): array
   {
     return [
-      'user_id' => LibraryUser::factory()->visitor(),
+      'user_id' => LibraryUser::factory()->visitor()->withoutAutoDetails(),
       'school_org' => fake()->company(),
       'purpose' => fake()->randomElement(['Research', 'Library Visit', 'Document Request', 'Study']),
     ];

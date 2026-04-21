@@ -12,8 +12,10 @@ class StagingUsersTableSeeder extends Seeder
    */
   public function run(): void
   {
-    if (StagingUser::query()->count() < 15) {
-      StagingUser::factory()->count(15 - StagingUser::query()->count())->create();
+    $existing = StagingUser::query()->count();
+
+    if ($existing < 15) {
+      StagingUser::factory()->count(15 - $existing)->create();
     }
   }
 }

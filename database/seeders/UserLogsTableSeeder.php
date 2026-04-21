@@ -23,8 +23,15 @@ class UserLogsTableSeeder extends Seeder
         ->with(['privilege', 'studentDetail', 'employeeDetail', 'visitorDetail'])
         ->get();
 
+      // Pre-compute existing log counts per user to avoid N+1 queries.
+      $existingCounts = UserLog::query()
+        ->whereIn('user_id', $users->pluck('id'))
+        ->selectRaw('user_id, COUNT(*) as log_count')
+        ->groupBy('user_id')
+        ->pluck('log_count', 'user_id');
+
       foreach ($users as $user) {
-        $logCount = UserLog::query()->where('user_id', $user->id)->count();
+        $logCount = (int) ($existingCounts->get($user->id) ?? 0);
 
         if ($logCount < 2) {
           UserLog::factory()->count(2 - $logCount)->create([
@@ -46,7 +53,7 @@ class UserLogsTableSeeder extends Seeder
   private function resolveActorId(): int
   {
     return (int) (LibraryUser::query()
-      ->where('email', 'tyronbechayda1112@gmail.com')
+      ->where('email', config('seeder.super_admin_email', 'superadmin@local.test'))
       ->value('id') ?? 0);
   }
 }

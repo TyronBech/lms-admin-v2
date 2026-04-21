@@ -63,7 +63,7 @@ class LibraryUsersTableSeeder extends Seeder
   private function resolveActorId(): int
   {
     return (int) (LibraryUser::query()
-      ->where('email', 'tyronbechayda1112@gmail.com')
+      ->where('email', config('seeder.super_admin_email', 'superadmin@local.test'))
       ->value('id') ?? 0);
   }
 }

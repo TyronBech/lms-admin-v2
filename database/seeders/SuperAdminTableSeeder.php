@@ -17,20 +17,19 @@ use Spatie\Permission\Models\Role;
 class SuperAdminTableSeeder extends Seeder
 {
   /**
-   * @var string
-   */
-  private const SUPER_ADMIN_EMAIL = 'tyronbechayda1112@gmail.com';
-
-  /**
-   * @var string
-   */
-  private const SUPER_ADMIN_PASSWORD = 'password';
-
-  /**
    * Seed super admin in usr_users and auth provider model.
    */
   public function run(): void
   {
+    if (! app()->environment('local', 'development', 'staging')) {
+      $this->command->warn('[SuperAdminTableSeeder] Skipped: not a local/dev/staging environment.');
+
+      return;
+    }
+
+    $email = (string) config('seeder.super_admin_email', 'superadmin@local.test');
+    $rawPassword = (string) config('seeder.super_admin_password', Str::random(16));
+
     DB::beginTransaction();
 
     try {
@@ -54,16 +53,16 @@ class SuperAdminTableSeeder extends Seeder
       }
 
       $superAdmin = LibraryUser::query()->updateOrCreate(
-        ['email' => self::SUPER_ADMIN_EMAIL],
+        ['email' => $email],
         [
           'rfid' => 'RF00000001',
           'privilege_id' => $adminPrivilege->id,
-          'first_name' => 'Tyron',
+          'first_name' => 'Super',
           'middle_name' => null,
-          'last_name' => 'Bechayda',
+          'last_name' => 'Admin',
           'suffix' => null,
           'gender' => 'Male',
-          'password' => Hash::make(self::SUPER_ADMIN_PASSWORD),
+          'password' => Hash::make($rawPassword),
           'two_factor_enabled' => false,
           'two_factor_secret' => null,
           'two_factor_backup_codes' => null,
@@ -82,9 +81,11 @@ class SuperAdminTableSeeder extends Seeder
 
       $superAdmin->syncRoles([RoleEnum::SuperAdmin->value]);
 
-      $this->seedConfiguredAuthModelSuperAdmin();
+      $this->seedConfiguredAuthModelSuperAdmin($email, $rawPassword);
 
       DB::commit();
+
+      $this->command->info("[SuperAdminTableSeeder] Super admin seeded. Email: {$email}");
     } catch (\Throwable $e) {
       DB::rollBack();
       throw $e;
@@ -94,7 +95,7 @@ class SuperAdminTableSeeder extends Seeder
   /**
    * Ensure super admin exists for the currently configured auth model.
    */
-  private function seedConfiguredAuthModelSuperAdmin(): void
+  private function seedConfiguredAuthModelSuperAdmin(string $email, string $rawPassword): void
   {
     $modelClass = config('auth.providers.users.model');
 
@@ -113,10 +114,10 @@ class SuperAdminTableSeeder extends Seeder
     if ($modelClass === User::class) {
       /** @var User $authUser */
       $authUser = $modelClass::query()->updateOrCreate(
-        ['email' => self::SUPER_ADMIN_EMAIL],
+        ['email' => $email],
         [
-          'name' => 'Tyron Bechayda',
-          'password' => Hash::make(self::SUPER_ADMIN_PASSWORD),
+          'name' => 'Super Admin',
+          'password' => Hash::make($rawPassword),
           'email_verified_at' => now(),
         ],
       );

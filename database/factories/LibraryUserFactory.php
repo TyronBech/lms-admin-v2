@@ -74,6 +74,18 @@ class LibraryUserFactory extends Factory
   }
 
   /**
+   * Skip automatic detail record creation after the user is persisted.
+   *
+   * Use this state when calling LibraryUserFactory from within a detail factory
+   * (StudentDetailFactory, EmployeeDetailFactory, VisitorDetailFactory) to prevent
+   * a duplicate detail row from being created by the afterCreating hook.
+   */
+  public function withoutAutoDetails(): static
+  {
+    return $this->newInstance(['afterCreating' => []]);
+  }
+
+  /**
    * Generate a user under a student privilege.
    */
   public function student(): static
