@@ -280,6 +280,7 @@ public function update(UpdateBookRequest $request, Book $book): RedirectResponse
 - Use `App\Enum\TransactionStatusEnum` and `App\Enum\PenaltyStatusEnum` for transaction status constants.
 - Use `App\Enum\UserTypeEnum` for user type constants.
 - Use `App\Enum\BookStatusEnum` for book status constants.
+- Always create a new Enum class if you detect db columns that are effectively enums but not yet represented in code.
 - Always use try catch blocks around database operations and log exceptions with Laravel's logging system.
 - Always use log levels (info, warning, error) appropriately in your logging statements.
 - Always return appropriate HTTP status codes in API responses (200, 201, 400, 401, 403, 404, 500).
