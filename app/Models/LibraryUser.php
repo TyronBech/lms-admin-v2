@@ -51,6 +51,13 @@ class LibraryUser extends Model
     ];
 
     /**
+     * Spatie permission guard used for role and permission checks.
+     *
+     * @var string
+     */
+    protected string $guard_name = 'web';
+
+    /**
      * Always eager load the primary profile relation graph.
      *
      * @var array<int, string>
