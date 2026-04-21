@@ -12,6 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement("ALTER TABLE bk_books MODIFY COLUMN remarks ENUM('On Shelf','Unreturned','Missing','Lost','Discarded','Lost And Paid For','Lost And Replaced') NOT NULL DEFAULT 'On Shelf'");
     }
 
@@ -24,6 +28,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         // Remap values not present in the original enum back to a valid legacy value.
         DB::statement("UPDATE bk_books SET remarks = 'Lost And Paid For' WHERE remarks = 'Lost And Replaced'");
         DB::statement("UPDATE bk_books SET remarks = 'Missing' WHERE remarks = 'Unreturned'");

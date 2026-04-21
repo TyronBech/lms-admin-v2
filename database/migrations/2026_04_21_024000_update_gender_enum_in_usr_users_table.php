@@ -18,6 +18,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         // Remap any existing 'Prefer not to say' rows to a valid value before narrowing.
         DB::statement("UPDATE usr_users SET gender = 'Male' WHERE gender = 'Prefer not to say'");
 
@@ -29,6 +33,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement("ALTER TABLE usr_users MODIFY COLUMN gender ENUM('Male','Female','Prefer not to say') NOT NULL");
     }
 };
