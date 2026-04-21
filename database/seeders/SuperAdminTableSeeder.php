@@ -28,7 +28,10 @@ class SuperAdminTableSeeder extends Seeder
     }
 
     $email = (string) config('seeder.super_admin_email', 'superadmin@local.test');
-    $rawPassword = (string) config('seeder.super_admin_password', Str::random(16));
+
+    // Generate a secure random password when SEEDER_SUPER_ADMIN_PASSWORD is not set in .env.
+    // The email and generated password are printed to the console at the end of seeding.
+    $rawPassword = (string) (config('seeder.super_admin_password') ?? Str::random(24));
 
     DB::beginTransaction();
 
@@ -86,6 +89,10 @@ class SuperAdminTableSeeder extends Seeder
       DB::commit();
 
       $this->command->info("[SuperAdminTableSeeder] Super admin seeded. Email: {$email}");
+
+      if (config('seeder.super_admin_password') === null) {
+        $this->command->warn("[SuperAdminTableSeeder] No SEEDER_SUPER_ADMIN_PASSWORD set. Generated password: {$rawPassword}");
+      }
     } catch (\Throwable $e) {
       DB::rollBack();
       throw $e;

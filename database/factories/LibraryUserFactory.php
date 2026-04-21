@@ -82,7 +82,7 @@ class LibraryUserFactory extends Factory
    */
   public function withoutAutoDetails(): static
   {
-    return $this->newInstance(['afterCreating' => []]);
+    return $this->withoutAfterCreating();
   }
 
   /**
