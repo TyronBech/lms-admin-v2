@@ -257,6 +257,23 @@ public function update(UpdateBookRequest $request, Book $book): RedirectResponse
 - The `timestamp` key must always use `now()->toDateTimeString()` for consistent formatting.
  
 ---
+
+## File Structure & Coding Standards (STRICTLY FOLLOW)
+
+- Follow PSR-12 for all PHP code, enforced by Laravel Pint.
+- Follow standard Laravel project structure for controllers, models, requests, resources, services, etc.
+- Follow standard React project structure for pages, components, layouts, and types.
+- Always write PHPDoc blocks for all classes and methods in Laravel.
+- Always use standard RESTful resource controller method names (index, show, create, store, edit, update, destroy).
+- Always use standard file naming conventions for controllers, models, React components, and pages as described in the File Naming Conventions section below.
+- Always use Eloquent for database interactions in Laravel, except when calling stored procedures or using MATCH AGAINST for full-text search.
+- Always use Form Request classes for validation in Laravel.
+- Always use middlewares for authentication and authorization in Laravel, never put auth logic in controllers.
+- Always hide buttons or links to actions the user doesn't have permission for, using Spatie's `can()` or `hasRole()`.
+- Always validate CRUD operations using policies or Spatie permissions, never write authorization logic directly in controllers.
+- Always use Inertia's `useForm()` for form handling in React, never use fetch.
+
+---
  
 ## Backend — Laravel 13 Rules (STRICTLY FOLLOW)
  
